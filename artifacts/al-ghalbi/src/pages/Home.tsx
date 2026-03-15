@@ -39,8 +39,8 @@ export default function Home() {
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               منصة التعليم الأولى في العراق
             </div>
-            <h1 className="font-display text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
-              تفوق في دراستك مع <br/>
+            <h1 className="font-display text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-6" style={{lineHeight: "1.5"}}>
+              تفوق في دراستك مع{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-200">
                 ملازم الأستاذ عباس
               </span>
