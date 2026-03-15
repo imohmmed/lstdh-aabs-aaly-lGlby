@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { BookOpen, Send, Instagram } from "lucide-react";
+import { Send, Instagram } from "lucide-react";
 import { useGetCategories } from "@workspace/api-client-react";
 
 export function Footer() {
@@ -15,9 +15,11 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-6">
             <Link href="/" className="inline-flex items-center gap-3 group">
-              <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
-                <BookOpen className="text-primary w-7 h-7" />
-              </div>
+              <img
+                src="/favicon.svg"
+                alt="لوغو الأستاذ عباس"
+                className="w-12 h-12 rounded-xl shadow-lg group-hover:scale-105 transition-transform duration-300 flex-shrink-0"
+              />
               <div>
                 <h3 className="font-display text-2xl font-bold text-white leading-tight">الأستاذ عباس</h3>
                 <p className="text-primary text-sm font-semibold">منصة تعليمية متكاملة</p>

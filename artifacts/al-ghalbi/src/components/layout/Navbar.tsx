@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Search, Moon, Sun, Menu, X, BookOpen, Home, LayoutDashboard, FileText, Loader2 } from "lucide-react";
+import { Search, Moon, Sun, Menu, X, Home, LayoutDashboard, FileText, Loader2 } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -116,9 +116,11 @@ export function Navbar() {
             {/* Right side - Logo */}
             <div className="flex items-center">
               <Link href="/" className="flex items-center gap-2 group">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
-                  <BookOpen className="text-white w-4 h-4" />
-                </div>
+                <img
+                  src="/favicon.svg"
+                  alt="لوغو الأستاذ عباس"
+                  className="w-9 h-9 rounded-xl shadow-lg group-hover:scale-105 transition-transform duration-300 flex-shrink-0"
+                />
                 <span className="font-display font-bold text-foreground text-sm md:text-base lg:text-lg leading-tight">
                   الأستاذ عباس علي الغالبي
                 </span>
