@@ -8,9 +8,9 @@ export default function Home() {
   const { data: categories, isLoading: isLoadingCats } = useGetCategories();
   const [, navigate] = useLocation();
 
-  const sections = categories?.filter((c) => !c.parentId) ?? [];
+  const sections = (categories?.filter((c) => !c.parentId) ?? []).sort((a, b) => a.order - b.order);
   const subCategoriesOf = (sectionId: number) =>
-    categories?.filter((c) => c.parentId === sectionId) ?? [];
+    (categories?.filter((c) => c.parentId === sectionId) ?? []).sort((a, b) => a.order - b.order);
 
   return (
     <AppLayout>
