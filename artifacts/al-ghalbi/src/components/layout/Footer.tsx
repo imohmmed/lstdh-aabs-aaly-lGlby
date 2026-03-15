@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { BookOpen, Send, Mail, MapPin } from "lucide-react";
+import { BookOpen, Send, Instagram } from "lucide-react";
 import { useGetCategories } from "@workspace/api-client-react";
 
 export function Footer() {
@@ -52,18 +52,20 @@ export function Footer() {
             </h4>
             <ul className="space-y-4">
               <li>
-                <a href="https://t.me/abbas_alghalbi" target="_blank" rel="noreferrer" className="flex items-center gap-3 hover:text-[#2AABEE] transition-colors group">
+                <a href="https://t.me/adb_3" target="_blank" rel="noreferrer" className="flex items-center gap-3 hover:text-[#2AABEE] transition-colors group">
                   <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[#2AABEE]/20 transition-colors">
                     <Send className="w-5 h-5" />
                   </div>
-                  <span className="font-medium" dir="ltr">@abbas_alghalbi</span>
+                  <span className="font-medium" dir="ltr">@adb_3</span>
                 </a>
               </li>
-              <li className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <span className="font-medium">العراق - بغداد</span>
+              <li>
+                <a href="https://www.instagram.com/abga0?igsh=dHMzcDJvbDNpcmc1" target="_blank" rel="noreferrer" className="flex items-center gap-3 hover:text-[#E1306C] transition-colors group">
+                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[#E1306C]/20 transition-colors">
+                    <Instagram className="w-5 h-5" />
+                  </div>
+                  <span className="font-medium" dir="ltr">@abga0</span>
+                </a>
               </li>
             </ul>
           </div>

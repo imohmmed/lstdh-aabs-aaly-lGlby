@@ -30,13 +30,14 @@ export default function AdminNotes() {
   const [isOpen, setIsOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   
+  const TELEGRAM_PURCHASE_URL = "https://t.me/mohmmedswag";
+
   const defaultForm = {
     title: "",
     teacherName: "الأستاذ عباس علي الغالبي",
     categoryId: 0,
     version: "",
     telegramDownloadUrl: "",
-    telegramPurchaseUrl: "",
     pdfUrl: "",
     coverImageUrl: "",
     pageCount: null as number | null,
@@ -58,7 +59,6 @@ export default function AdminNotes() {
       categoryId: note.categoryId,
       version: note.version || "",
       telegramDownloadUrl: note.telegramDownloadUrl || "",
-      telegramPurchaseUrl: note.telegramPurchaseUrl || "",
       pdfUrl: note.pdfUrl || "",
       coverImageUrl: note.coverImageUrl || "",
       pageCount: note.pageCount,
@@ -114,6 +114,7 @@ export default function AdminNotes() {
     try {
       const payload = {
         ...formData,
+        telegramPurchaseUrl: TELEGRAM_PURCHASE_URL,
         pageCount: formData.pageCount || null,
         fileSize: formData.fileSize || null
       };
@@ -203,10 +204,6 @@ export default function AdminNotes() {
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">رابط تيليكرام (التحميل المجاني)</label>
                       <input type="url" value={formData.telegramDownloadUrl} onChange={e => setFormData({...formData, telegramDownloadUrl: e.target.value})} className="w-full p-3 border border-gray-300 rounded-xl outline-none" dir="ltr" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">رابط تيليكرام (شراء الأصلية)</label>
-                      <input type="url" value={formData.telegramPurchaseUrl} onChange={e => setFormData({...formData, telegramPurchaseUrl: e.target.value})} className="w-full p-3 border border-gray-300 rounded-xl outline-none" dir="ltr" />
                     </div>
 
                     {/* File Uploads */}
