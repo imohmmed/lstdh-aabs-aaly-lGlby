@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
@@ -8,6 +8,73 @@ pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@$
 
 interface PdfViewerProps {
   url: string;
+}
+
+// A single lazy page that only renders its canvas when visible
+function LazyPage({
+  pageNum,
+  width,
+  numPages,
+}: {
+  pageNum: number;
+  width: number;
+  numPages: number;
+}) {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { rootMargin: "300px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const height = Math.round(width * 1.414);
+
+  return (
+    <div
+      ref={ref}
+      className="relative overflow-hidden rounded-xl shadow-md border border-border"
+      style={{ minHeight: height }}
+    >
+      {visible ? (
+        <Page
+          pageNumber={pageNum}
+          width={width}
+          renderTextLayer={false}
+          renderAnnotationLayer={false}
+          loading={
+            <div
+              style={{ width, height }}
+              className="bg-secondary/5 flex items-center justify-center"
+            >
+              <Loader2 className="w-6 h-6 animate-spin text-primary/40" />
+            </div>
+          }
+        />
+      ) : (
+        <div
+          style={{ width, height }}
+          className="bg-secondary/5 flex items-center justify-center"
+        >
+          <Loader2 className="w-5 h-5 animate-spin text-primary/20" />
+        </div>
+      )}
+      <div className="absolute bottom-2 left-2 bg-black/30 text-white text-xs px-2 py-0.5 rounded-full pointer-events-none">
+        {pageNum} / {numPages}
+      </div>
+    </div>
+  );
 }
 
 export function PdfViewer({ url }: PdfViewerProps) {
@@ -60,25 +127,12 @@ export function PdfViewer({ url }: PdfViewerProps) {
       >
         <div className="space-y-3">
           {Array.from({ length: numPages }, (_, i) => i + 1).map((pageNum) => (
-            <div key={pageNum} className="relative overflow-hidden rounded-xl shadow-md border border-border">
-              <Page
-                pageNumber={pageNum}
-                width={containerWidth}
-                renderTextLayer={false}
-                renderAnnotationLayer={false}
-                loading={
-                  <div
-                    style={{ width: containerWidth, height: containerWidth * 1.41 }}
-                    className="bg-secondary/5 flex items-center justify-center"
-                  >
-                    <Loader2 className="w-6 h-6 animate-spin text-primary/40" />
-                  </div>
-                }
-              />
-              <div className="absolute bottom-2 left-2 bg-black/30 text-white text-xs px-2 py-0.5 rounded-full">
-                {pageNum} / {numPages}
-              </div>
-            </div>
+            <LazyPage
+              key={pageNum}
+              pageNum={pageNum}
+              width={containerWidth}
+              numPages={numPages}
+            />
           ))}
         </div>
       </Document>
