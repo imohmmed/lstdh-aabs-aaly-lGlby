@@ -110,8 +110,9 @@ export function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 mx-4 sm:mx-6 lg:mx-8 mt-1 glass-panel rounded-2xl border border-white/10 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="sticky top-0 z-50 bg-background px-4 sm:px-6 lg:px-8 pt-1 pb-2">
+      <header className="glass-panel rounded-2xl border border-white/10 shadow-lg max-w-7xl mx-auto">
+        <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-14">
             {/* Right side - Logo */}
             <div className="flex items-center">
@@ -174,6 +175,7 @@ export function Navbar() {
           {isSearchOpen && <SearchBar onClose={closeSearch} />}
         </AnimatePresence>
       </header>
+      </div>
 
       {/* Mobile Menu Drawer */}
       <AnimatePresence>
