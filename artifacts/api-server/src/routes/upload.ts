@@ -36,9 +36,20 @@ router.post("/pdf", upload.single("file"), async (req, res) => {
 
     let pageCount = 1;
     try {
-      const pdfParse = (await import("pdf-parse")).default;
-      const data = await pdfParse(fileBuffer);
-      pageCount = data.numpages;
+      // Extract page count from PDF cross-reference table (reliable for well-formed PDFs)
+      // Count /Type /Page entries in the PDF binary (works for linearized PDFs)
+      const str = fileBuffer.toString("binary");
+      const pageMatches = str.match(/\/Type\s*\/Page\b/g);
+      if (pageMatches && pageMatches.length > 0) {
+        pageCount = pageMatches.length;
+      } else {
+        // Fallback: try /Count N in xref
+        const countMatches = str.match(/\/Count\s+(\d+)/g);
+        if (countMatches && countMatches.length > 0) {
+          const counts = countMatches.map((m) => parseInt(m.replace(/\/Count\s+/, ""), 10));
+          pageCount = Math.max(...counts);
+        }
+      }
     } catch {
       pageCount = 1;
     }
