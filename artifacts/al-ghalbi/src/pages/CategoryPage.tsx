@@ -74,9 +74,9 @@ export default function CategoryPage() {
                 <Loader2 className="w-10 h-10 text-primary animate-spin" />
               </div>
             ) : notes && notes.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {notes.map((note, idx) => (
-                  <NoteCard key={note.id} note={note} index={idx} compact />
+                  <NoteCard key={note.id} note={note} index={idx} />
                 ))}
               </div>
             ) : (
