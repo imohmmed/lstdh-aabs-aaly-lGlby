@@ -4,16 +4,15 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { Lock, ChevronRight, ChevronLeft, Loader2, AlertCircle } from "lucide-react";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url
-).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface PdfViewerProps {
   url: string;
 }
 
 export function PdfViewer({ url }: PdfViewerProps) {
+  // Ensure absolute URL for pdfjs worker to fetch correctly
+  const absoluteUrl = url.startsWith("http") ? url : `${window.location.origin}${url}`;
   const [numPages, setNumPages] = useState<number>(0);
   const [isHidden, setIsHidden] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -102,7 +101,7 @@ export function PdfViewer({ url }: PdfViewerProps) {
 
       {/* PDF Document - all pages stacked */}
       <Document
-        file={url}
+        file={absoluteUrl}
         onLoadSuccess={onDocumentLoadSuccess}
         onLoadError={onDocumentLoadError}
         loading={null}

@@ -42,9 +42,13 @@ export function NoteCard({ note, index }: NoteCardProps) {
         
         {/* Top actions */}
         <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-          <div className="bg-background/90 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-primary shadow-sm border border-border">
+          <Link
+            href={note.categoryId ? `/category/${note.categoryId}` : "/"}
+            className="bg-background/90 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-primary shadow-sm border border-border hover:bg-primary hover:text-white transition-colors"
+            onClick={(e) => e.stopPropagation()}
+          >
             {note.categoryName || "عام"}
-          </div>
+          </Link>
           <SharePopover noteTitle={note.title} url={currentUrl} />
         </div>
       </div>

@@ -71,7 +71,7 @@ export default function NoteDetail() {
             <ArrowRight className="w-4 h-4" /> الرئيسية
           </Link>
           <span className="text-white/30">/</span>
-          <span className="text-white/60">{note.categoryName || "عام"}</span>
+          <Link href={`/category/${note.categoryId}`} className="text-white/60 hover:text-white transition-colors">{note.categoryName || "عام"}</Link>
           <span className="text-white/30">/</span>
           <span className="text-white truncate max-w-[200px]">{note.title}</span>
         </div>
@@ -99,9 +99,9 @@ export default function NoteDetail() {
               </div>
               
               <div className="px-2 pb-2">
-                <div className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold mb-3">
+                <Link href={`/category/${note.categoryId}`} className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold mb-3 hover:bg-primary hover:text-white transition-colors">
                   {note.categoryName}
-                </div>
+                </Link>
                 <h1 className="font-display text-2xl font-bold text-foreground mb-2 leading-tight">
                   {note.title}
                 </h1>
