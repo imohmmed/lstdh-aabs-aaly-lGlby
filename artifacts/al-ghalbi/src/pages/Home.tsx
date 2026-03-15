@@ -39,7 +39,7 @@ export default function Home() {
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               منصة التعليم الأولى في العراق
             </div>
-            <h1 className="font-display text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+            <h1 className="font-display text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
               تفوق في دراستك مع <br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-200">
                 ملازم الأستاذ عباس
@@ -56,7 +56,7 @@ export default function Home() {
       <section className="py-16 -mt-16 relative z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-card rounded-3xl p-6 shadow-xl border border-border/50 backdrop-blur-xl">
-            <h2 className="font-display text-2xl font-bold text-center mb-8 flex flex-col items-center gap-3">
+            <h2 className="font-display text-xl font-bold text-center mb-8 flex flex-col items-center gap-3">
               تصفح حسب القسم
               <div className="w-12 h-1.5 bg-primary rounded-full" />
             </h2>
@@ -101,7 +101,7 @@ export default function Home() {
       <section className="py-12 pb-24 min-h-[500px]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="font-display text-3xl font-bold text-foreground flex items-center gap-3">
+            <h2 className="font-display text-2xl font-bold text-foreground flex items-center gap-3">
               <Library className="w-8 h-8 text-primary" />
               {selectedCategory 
                 ? categories?.find(c => c.id === selectedCategory)?.name 
