@@ -11,14 +11,14 @@ export function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full glass-panel border-b-0 border-white/10">
+      <header className="sticky top-3 z-50 mx-4 sm:mx-6 lg:mx-8 glass-panel rounded-2xl border border-white/10 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+          <div className="flex justify-between items-center h-14">
             {/* Right side - Logo */}
             <div className="flex items-center">
               <Link href="/" className="flex items-center gap-2 group">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
-                  <BookOpen className="text-white w-6 h-6" />
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
+                  <BookOpen className="text-white w-4 h-4" />
                 </div>
                 <span className="font-display font-bold text-foreground text-sm md:text-base lg:text-lg leading-tight">
                   <span className="md:hidden">الأستاذ عباس علي الغالبي</span>
