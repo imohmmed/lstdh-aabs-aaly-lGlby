@@ -2,7 +2,7 @@
 
 ## Overview
 
-pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
+pnpm workspace monorepo using TypeScript. This is the student website for **الأستاذ عباس علي الغالبي** — a full-stack Arabic RTL educational platform for sharing study notes (ملازم/PDFs) with categories, ratings, sharing, protected PDF viewer, dark mode, and an admin panel.
 
 ## Stack
 
@@ -15,33 +15,102 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **Validation**: Zod (`zod/v4`), `drizzle-zod`
 - **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (CJS bundle)
+- **Frontend**: React + Vite + Tailwind CSS v4 + TanStack Query
 
 ## Structure
 
 ```text
 artifacts-monorepo/
-├── artifacts/              # Deployable applications
-│   └── api-server/         # Express API server
-├── lib/                    # Shared libraries
-│   ├── api-spec/           # OpenAPI spec + Orval codegen config
-│   ├── api-client-react/   # Generated React Query hooks
-│   ├── api-zod/            # Generated Zod schemas from OpenAPI
-│   └── db/                 # Drizzle ORM schema + DB connection
-├── scripts/                # Utility scripts (single workspace package)
-│   └── src/                # Individual .ts scripts, run via `pnpm --filter @workspace/scripts run <script>`
-├── pnpm-workspace.yaml     # pnpm workspace (artifacts/*, lib/*, lib/integrations/*, scripts)
-├── tsconfig.base.json      # Shared TS options (composite, bundler resolution, es2022)
-├── tsconfig.json           # Root TS project references
-└── package.json            # Root package with hoisted devDeps
+├── artifacts/
+│   ├── al-ghalbi/           # React frontend (RTL Arabic student website)
+│   └── api-server/          # Express API server
+├── lib/
+│   ├── api-spec/            # OpenAPI spec + Orval codegen config
+│   ├── api-client-react/    # Generated React Query hooks
+│   ├── api-zod/             # Generated Zod schemas from OpenAPI
+│   └── db/                  # Drizzle ORM schema + DB connection
+├── scripts/                 # Utility scripts
+├── pnpm-workspace.yaml
+├── tsconfig.base.json
+├── tsconfig.json
+└── package.json
 ```
+
+## Frontend: artifacts/al-ghalbi
+
+Arabic RTL student website with full design:
+
+- **Colors (Day)**: bg `#F7F5F0` (cream), navy `#1A2744`, teal `#0D9488`, gold `#F59E0B`
+- **Colors (Night)**: bg `#0F172A`, card `#1E293B`, text `#F1F5F9`
+- **Fonts**: Zanjabeel (headings, OTF files in `public/fonts/`) + Cairo (body, from Google Fonts)
+- **Preview path**: `/` (root)
+
+### Pages
+- `/` — Home page with hero, category filter tabs, notes grid
+- `/note/:id` — Note detail with PDF viewer (black overlay when minimized), star rating, share buttons
+- `/admin` — Admin stats dashboard
+- `/admin/categories` — Manage categories (create/edit/delete)
+- `/admin/notes` — Manage notes (create/edit/delete, PDF/image upload)
+
+### Features
+- RTL layout (Arabic)
+- Dark mode toggle (localStorage)
+- 5-star rating system (localStorage fingerprint anti-duplicate)
+- WhatsApp/Telegram sharing buttons on each note card
+- A4 aspect ratio (1:1.41) for note covers
+- Protected PDF viewer (Page Visibility API hides PDF when tab hidden)
+- Animated page transitions (framer-motion)
+
+### Vite proxy
+Vite dev server proxies `/api/*` → `http://localhost:8080` for API calls.
+
+## API Server: artifacts/api-server
+
+Express API on port 8080. All routes prefixed `/api`.
+
+### Routes
+- `GET/POST /api/categories` — list and create categories
+- `PATCH/DELETE /api/categories/:id` — update/delete category
+- `GET/POST /api/notes` — list notes (with optional `?categoryId=` or `?search=`) and create
+- `GET/PATCH/DELETE /api/notes/:id` — get, update, delete note
+- `GET /api/notes/:id/similar` — similar notes in same category
+- `POST /api/upload/pdf` — upload PDF, auto-detects page count and file size
+- `POST /api/upload/image` — upload cover image
+- `GET /api/uploads/:filename` — serve uploaded files (static)
+- `POST /api/ratings` — submit rating (fingerprint-based duplicate check)
+- `GET /api/ratings/:noteId` — get average rating for a note
+- `POST /api/stats/event` — record a view/preview/download event
+- `GET /api/stats` — get all notes stats for admin dashboard
+- `GET /api/stats/:noteId` — get stats for a specific note
+
+### Uploads
+Files stored in `artifacts/api-server/uploads/`, served at `/api/uploads/`.
+
+## Database Schema
+
+Tables: `categories`, `notes`, `ratings`, `stats_events`
+
+### categories
+- `id`, `name`, `icon` (emoji), `order`, `createdAt`
+
+### notes
+- `id`, `title`, `teacherName`, `categoryId`, `version`, `pageCount`, `fileSize`
+- `coverImageUrl`, `pdfUrl`, `telegramDownloadUrl`, `telegramPurchaseUrl`
+- `createdAt`, `updatedAt`
+
+### ratings
+- `id`, `noteId`, `rating` (1-5), `fingerprint`, `createdAt`
+
+### stats_events
+- `id`, `noteId`, `eventType` (view/preview_click/download_click), `createdAt`
 
 ## TypeScript & Composite Projects
 
 Every package extends `tsconfig.base.json` which sets `composite: true`. The root `tsconfig.json` lists all packages as project references. This means:
 
-- **Always typecheck from the root** — run `pnpm run typecheck` (which runs `tsc --build --emitDeclarationOnly`). This builds the full dependency graph so that cross-package imports resolve correctly. Running `tsc` inside a single package will fail if its dependencies haven't been built yet.
-- **`emitDeclarationOnly`** — we only emit `.d.ts` files during typecheck; actual JS bundling is handled by esbuild/tsx/vite...etc, not `tsc`.
-- **Project references** — when package A depends on package B, A's `tsconfig.json` must list B in its `references` array. `tsc --build` uses this to determine build order and skip up-to-date packages.
+- **Always typecheck from the root** — run `pnpm run typecheck`
+- **`emitDeclarationOnly`** — we only emit `.d.ts` files during typecheck
+- **Project references** — when package A depends on package B, A's `tsconfig.json` must list B in its `references` array
 
 ## Root Scripts
 
@@ -55,12 +124,18 @@ Every package extends `tsconfig.base.json` which sets `composite: true`. The roo
 Express 5 API server. Routes live in `src/routes/` and use `@workspace/api-zod` for request and response validation and `@workspace/db` for persistence.
 
 - Entry: `src/index.ts` — reads `PORT`, starts Express
-- App setup: `src/app.ts` — mounts CORS, JSON/urlencoded parsing, routes at `/api`
-- Routes: `src/routes/index.ts` mounts sub-routers; `src/routes/health.ts` exposes `GET /health` (full path: `/api/health`)
-- Depends on: `@workspace/db`, `@workspace/api-zod`
-- `pnpm --filter @workspace/api-server run dev` — run the dev server
-- `pnpm --filter @workspace/api-server run build` — production esbuild bundle (`dist/index.cjs`)
-- Build bundles an allowlist of deps (express, cors, pg, drizzle-orm, zod, etc.) and externalizes the rest
+- App setup: `src/app.ts` — mounts CORS, JSON/urlencoded parsing, static `/api/uploads`, routes at `/api`
+- Routes: `src/routes/index.ts` mounts all sub-routers
+- Depends on: `@workspace/db`, `@workspace/api-zod`, `multer`, `pdf-parse`
+
+### `artifacts/al-ghalbi` (`@workspace/al-ghalbi`)
+
+React + Vite + Tailwind CSS v4 frontend with Arabic RTL.
+
+- Entry: `src/main.tsx`
+- Routing: wouter
+- State: TanStack Query via `@workspace/api-client-react` hooks
+- Depends on: `@workspace/api-client-react`, `framer-motion`, `react-hook-form`, etc.
 
 ### `lib/db` (`@workspace/db`)
 
@@ -68,11 +143,10 @@ Database layer using Drizzle ORM with PostgreSQL. Exports a Drizzle client insta
 
 - `src/index.ts` — creates a `Pool` + Drizzle instance, exports schema
 - `src/schema/index.ts` — barrel re-export of all models
-- `src/schema/<modelname>.ts` — table definitions with `drizzle-zod` insert schemas (no models definitions exist right now)
 - `drizzle.config.ts` — Drizzle Kit config (requires `DATABASE_URL`, automatically provided by Replit)
 - Exports: `.` (pool, db, schema), `./schema` (schema only)
 
-Production migrations are handled by Replit when publishing. In development, we just use `pnpm --filter @workspace/db run push`, and we fallback to `pnpm --filter @workspace/db run push-force`.
+Production migrations are handled by Replit when publishing. In development: `pnpm --filter @workspace/db run push`
 
 ### `lib/api-spec` (`@workspace/api-spec`)
 
@@ -85,12 +159,12 @@ Run codegen: `pnpm --filter @workspace/api-spec run codegen`
 
 ### `lib/api-zod` (`@workspace/api-zod`)
 
-Generated Zod schemas from the OpenAPI spec (e.g. `HealthCheckResponse`). Used by `api-server` for response validation.
+Generated Zod schemas from the OpenAPI spec. Used by `api-server` for request/response validation.
 
 ### `lib/api-client-react` (`@workspace/api-client-react`)
 
-Generated React Query hooks and fetch client from the OpenAPI spec (e.g. `useHealthCheck`, `healthCheck`).
+Generated React Query hooks and fetch client from the OpenAPI spec.
 
 ### `scripts` (`@workspace/scripts`)
 
-Utility scripts package. Each script is a `.ts` file in `src/` with a corresponding npm script in `package.json`. Run scripts via `pnpm --filter @workspace/scripts run <script>`. Scripts can import any workspace package (e.g., `@workspace/db`) by adding it as a dependency in `scripts/package.json`.
+Utility scripts package. Each script is a `.ts` file in `src/` with a corresponding npm script in `package.json`.

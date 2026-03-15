@@ -1,22 +1,31 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: API specification for الأستاذ عباس علي الغالبي website
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: categories
+    description: Category operations
+  - name: notes
+    description: Study material operations
+  - name: ratings
+    description: Rating operations
+  - name: stats
+    description: Statistics operations
+  - name: upload
+    description: File upload operations
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +33,362 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /categories:
+    get:
+      operationId: getCategories
+      tags: [categories]
+      summary: Get all categories
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+    post:
+      operationId: createCategory
+      tags: [categories]
+      summary: Create a category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCategoryInput"
+      responses:
+        "201":
+          description: Created category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+
+  /categories/{id}:
+    patch:
+      operationId: updateCategory
+      tags: [categories]
+      summary: Update a category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCategoryInput"
+      responses:
+        "200":
+          description: Updated category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "404":
+          description: Not found
+
+    delete:
+      operationId: deleteCategory
+      tags: [categories]
+      summary: Delete a category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResult"
+        "404":
+          description: Not found
+
+  /notes:
+    get:
+      operationId: getNotes
+      tags: [notes]
+      summary: Get all notes with optional filters
+      parameters:
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of notes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Note"
+
+    post:
+      operationId: createNote
+      tags: [notes]
+      summary: Create a note
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNoteInput"
+      responses:
+        "201":
+          description: Created note
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+
+  /notes/{id}:
+    get:
+      operationId: getNoteById
+      tags: [notes]
+      summary: Get note by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Note details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NoteDetail"
+        "404":
+          description: Not found
+
+    patch:
+      operationId: updateNote
+      tags: [notes]
+      summary: Update a note
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNoteInput"
+      responses:
+        "200":
+          description: Updated note
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+        "404":
+          description: Not found
+
+    delete:
+      operationId: deleteNote
+      tags: [notes]
+      summary: Delete a note
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResult"
+        "404":
+          description: Not found
+
+  /notes/{id}/similar:
+    get:
+      operationId: getSimilarNotes
+      tags: [notes]
+      summary: Get similar notes from same category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Similar notes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Note"
+
+  /upload/pdf:
+    post:
+      operationId: uploadPdf
+      tags: [upload]
+      summary: Upload PDF file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+      responses:
+        "200":
+          description: Upload result with file info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PdfUploadResult"
+
+  /upload/image:
+    post:
+      operationId: uploadImage
+      tags: [upload]
+      summary: Upload cover image
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+      responses:
+        "200":
+          description: Upload result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageUploadResult"
+
+  /ratings:
+    post:
+      operationId: submitRating
+      tags: [ratings]
+      summary: Submit a rating for a note
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitRatingInput"
+      responses:
+        "201":
+          description: Rating submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingResult"
+        "409":
+          description: Already rated
+
+  /ratings/{noteId}:
+    get:
+      operationId: getRatingByNote
+      tags: [ratings]
+      summary: Get rating stats for a note
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Rating stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingStats"
+
+  /stats/event:
+    post:
+      operationId: recordEvent
+      tags: [stats]
+      summary: Record a stat event (view, download_click, preview_click)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecordEventInput"
+      responses:
+        "200":
+          description: Event recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResult"
+
+  /stats/{noteId}:
+    get:
+      operationId: getNoteStats
+      tags: [stats]
+      summary: Get stats for a specific note
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Stats for note
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NoteStats"
+
+  /stats:
+    get:
+      operationId: getAllStats
+      tags: [stats]
+      summary: Get stats for all notes (admin)
+      responses:
+        "200":
+          description: All notes stats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NoteStats"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +399,302 @@ components:
       required:
         - status
 
+    DeleteResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required:
+        - success
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        icon:
+          type: ["string", "null"]
+        order:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - order
+        - createdAt
+
+    CreateCategoryInput:
+      type: object
+      properties:
+        name:
+          type: string
+        icon:
+          type: ["string", "null"]
+        order:
+          type: integer
+      required:
+        - name
+        - order
+
+    Note:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        teacherName:
+          type: string
+        version:
+          type: ["string", "null"]
+        pageCount:
+          type: ["integer", "null"]
+        fileSize:
+          type: ["string", "null"]
+        coverImageUrl:
+          type: ["string", "null"]
+        pdfUrl:
+          type: ["string", "null"]
+        telegramDownloadUrl:
+          type: ["string", "null"]
+        telegramPurchaseUrl:
+          type: ["string", "null"]
+        categoryId:
+          type: integer
+        categoryName:
+          type: ["string", "null"]
+        averageRating:
+          type: ["number", "null"]
+        ratingCount:
+          type: integer
+        updatedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - teacherName
+        - categoryId
+        - ratingCount
+        - updatedAt
+        - createdAt
+
+    NoteDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        teacherName:
+          type: string
+        version:
+          type: ["string", "null"]
+        pageCount:
+          type: ["integer", "null"]
+        fileSize:
+          type: ["string", "null"]
+        coverImageUrl:
+          type: ["string", "null"]
+        pdfUrl:
+          type: ["string", "null"]
+        telegramDownloadUrl:
+          type: ["string", "null"]
+        telegramPurchaseUrl:
+          type: ["string", "null"]
+        categoryId:
+          type: integer
+        categoryName:
+          type: ["string", "null"]
+        averageRating:
+          type: ["number", "null"]
+        ratingCount:
+          type: integer
+        viewCount:
+          type: integer
+        downloadClickCount:
+          type: integer
+        previewClickCount:
+          type: integer
+        updatedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - teacherName
+        - categoryId
+        - ratingCount
+        - viewCount
+        - downloadClickCount
+        - previewClickCount
+        - updatedAt
+        - createdAt
+
+    CreateNoteInput:
+      type: object
+      properties:
+        title:
+          type: string
+        teacherName:
+          type: string
+        version:
+          type: ["string", "null"]
+        pageCount:
+          type: ["integer", "null"]
+        fileSize:
+          type: ["string", "null"]
+        coverImageUrl:
+          type: ["string", "null"]
+        pdfUrl:
+          type: ["string", "null"]
+        telegramDownloadUrl:
+          type: ["string", "null"]
+        telegramPurchaseUrl:
+          type: ["string", "null"]
+        categoryId:
+          type: integer
+      required:
+        - title
+        - teacherName
+        - categoryId
+
+    UpdateNoteInput:
+      type: object
+      properties:
+        title:
+          type: ["string", "null"]
+        teacherName:
+          type: ["string", "null"]
+        version:
+          type: ["string", "null"]
+        pageCount:
+          type: ["integer", "null"]
+        fileSize:
+          type: ["string", "null"]
+        coverImageUrl:
+          type: ["string", "null"]
+        pdfUrl:
+          type: ["string", "null"]
+        telegramDownloadUrl:
+          type: ["string", "null"]
+        telegramPurchaseUrl:
+          type: ["string", "null"]
+        categoryId:
+          type: ["integer", "null"]
+
+    PdfUploadResult:
+      type: object
+      properties:
+        url:
+          type: string
+        pageCount:
+          type: integer
+        fileSize:
+          type: string
+        filename:
+          type: string
+      required:
+        - url
+        - pageCount
+        - fileSize
+        - filename
+
+    ImageUploadResult:
+      type: object
+      properties:
+        url:
+          type: string
+        filename:
+          type: string
+      required:
+        - url
+        - filename
+
+    SubmitRatingInput:
+      type: object
+      properties:
+        noteId:
+          type: integer
+        rating:
+          type: integer
+        fingerprint:
+          type: string
+      required:
+        - noteId
+        - rating
+        - fingerprint
+
+    RatingResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        averageRating:
+          type: number
+        ratingCount:
+          type: integer
+      required:
+        - success
+        - averageRating
+        - ratingCount
+
+    RatingStats:
+      type: object
+      properties:
+        noteId:
+          type: integer
+        averageRating:
+          type: ["number", "null"]
+        ratingCount:
+          type: integer
+      required:
+        - noteId
+        - ratingCount
+
+    RecordEventInput:
+      type: object
+      properties:
+        noteId:
+          type: integer
+        eventType:
+          type: string
+          enum: [view, download_click, preview_click]
+      required:
+        - noteId
+        - eventType
+
+    NoteStats:
+      type: object
+      properties:
+        noteId:
+          type: integer
+        noteTitle:
+          type: string
+        viewCount:
+          type: integer
+        downloadClickCount:
+          type: integer
+        previewClickCount:
+          type: integer
+        averageRating:
+          type: ["number", "null"]
+        ratingCount:
+          type: integer
+      required:
+        - noteId
+        - noteTitle
+        - viewCount
+        - downloadClickCount
+        - previewClickCount
+        - ratingCount
