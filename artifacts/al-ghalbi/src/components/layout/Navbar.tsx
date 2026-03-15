@@ -20,8 +20,8 @@ export function Navbar() {
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
                   <BookOpen className="text-white w-6 h-6" />
                 </div>
-                <span className="font-display font-bold text-foreground bg-clip-text text-transparent bg-gradient-to-l from-foreground to-foreground/70 text-sm md:text-base lg:text-lg leading-tight">
-                  <span className="md:hidden">الأستاذ عباس</span>
+                <span className="font-display font-bold text-foreground text-sm md:text-base lg:text-lg leading-tight">
+                  <span className="md:hidden">الأستاذ عباس علي الغالبي</span>
                   <span className="hidden md:inline">الأستاذ عباس علي الغالبي</span>
                 </span>
               </Link>
