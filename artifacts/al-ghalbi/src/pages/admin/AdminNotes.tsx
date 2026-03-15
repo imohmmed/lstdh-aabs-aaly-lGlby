@@ -240,53 +240,61 @@ export default function AdminNotes() {
           </Dialog>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-          <table className="w-full text-right text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200 text-gray-600 font-semibold">
-              <tr>
-                <th className="px-6 py-4">الغلاف</th>
-                <th className="px-6 py-4">الاسم</th>
-                <th className="px-6 py-4">القسم</th>
-                <th className="px-6 py-4">PDF</th>
-                <th className="px-6 py-4 w-32">الإجراءات</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {loadingNotes ? (
-                <tr><td colSpan={5} className="p-8 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" /></td></tr>
-              ) : notes?.length ? notes.map((note) => (
-                <tr key={note.id} className="hover:bg-gray-50/50">
-                  <td className="px-6 py-4">
-                    {note.coverImageUrl ? (
-                      <img src={note.coverImageUrl} className="w-10 h-14 object-cover rounded shadow-sm border border-gray-200" alt="cover"/>
-                    ) : (
-                      <div className="w-10 h-14 bg-gray-100 rounded border border-gray-200 flex items-center justify-center"><ImageIcon className="w-4 h-4 text-gray-400"/></div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 font-bold text-gray-900">{note.title}</td>
-                  <td className="px-6 py-4 text-gray-600">
-                    <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded text-xs font-semibold">{note.categoryName}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    {note.pdfUrl ? <span className="text-green-600 text-xs font-bold flex items-center gap-1"><FileText className="w-3 h-3"/>مرفوع</span> : <span className="text-gray-400 text-xs">لا يوجد</span>}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <button onClick={() => handleOpenEdit(note)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => handleDelete(note.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              )) : (
-                <tr><td colSpan={5} className="p-8 text-center text-gray-500">لا توجد ملازم</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        {loadingNotes ? (
+          <div className="bg-white rounded-2xl p-10 text-center border border-gray-200">
+            <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
+          </div>
+        ) : !notes?.length ? (
+          <div className="bg-white rounded-2xl p-10 text-center text-gray-400 border border-dashed border-gray-300">
+            <FileText className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+            <p>لا توجد ملازم — اضغط على "إضافة ملزمة" للبدء</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {notes.map((note) => (
+              <div key={note.id} className="bg-white border border-gray-200 rounded-2xl shadow-sm flex items-center gap-4 px-4 py-3">
+                {/* Cover */}
+                {note.coverImageUrl ? (
+                  <img src={note.coverImageUrl} className="w-12 h-16 object-cover rounded-lg shadow-sm border border-gray-200 flex-shrink-0" alt="cover" />
+                ) : (
+                  <div className="w-12 h-16 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center flex-shrink-0">
+                    <ImageIcon className="w-5 h-5 text-gray-400" />
+                  </div>
+                )}
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-gray-900 text-sm truncate">{note.title}</p>
+                  <span className="inline-block mt-1 bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-semibold">
+                    {note.categoryName}
+                  </span>
+                  <div className="flex items-center gap-2 mt-1">
+                    {note.pdfUrl
+                      ? <span className="text-green-600 text-xs font-bold flex items-center gap-1"><FileText className="w-3 h-3" />PDF مرفوع</span>
+                      : <span className="text-gray-400 text-xs">لا يوجد PDF</span>}
+                    {note.pageCount ? <span className="text-gray-400 text-xs">· {note.pageCount} صفحة</span> : null}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  <button
+                    onClick={() => handleOpenEdit(note)}
+                    className="p-2.5 text-blue-600 hover:bg-blue-50 rounded-xl transition-colors"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(note.id)}
+                    className="p-2.5 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </AdminLayout>
   );
