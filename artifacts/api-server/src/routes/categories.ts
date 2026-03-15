@@ -26,7 +26,16 @@ router.get("/", async (_req, res) => {
 router.post("/", async (req, res) => {
   try {
     const body = CreateCategoryBody.parse(req.body);
-    const [created] = await db.insert(categoriesTable).values(body).returning();
+    const insertValues: Record<string, unknown> = {
+      name: body.name,
+      icon: body.icon ?? null,
+      order: body.order,
+      parentId: body.parentId ?? null,
+    };
+    const [created] = await db
+      .insert(categoriesTable)
+      .values(insertValues as any)
+      .returning();
     res.status(201).json(created);
   } catch (err) {
     res.status(400).json({ error: "Invalid input" });
@@ -36,10 +45,20 @@ router.post("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   try {
     const { id } = UpdateCategoryParams.parse({ id: Number(req.params.id) });
-    const body = UpdateCategoryBody.parse(req.body);
+    const partial = UpdateCategoryBody.partial().parse(req.body);
+    const updateData: Record<string, unknown> = {};
+    if (partial.name !== undefined) updateData.name = partial.name;
+    if (partial.icon !== undefined) updateData.icon = partial.icon;
+    if (partial.order !== undefined) updateData.order = partial.order;
+    if ("parentId" in partial) updateData.parentId = partial.parentId ?? null;
+
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({ error: "No fields to update" });
+    }
+
     const [updated] = await db
       .update(categoriesTable)
-      .set(body)
+      .set(updateData as any)
       .where(eq(categoriesTable.id, id))
       .returning();
     if (!updated) return res.status(404).json({ error: "Not found" });
