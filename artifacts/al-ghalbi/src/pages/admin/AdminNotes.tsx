@@ -174,8 +174,18 @@ export default function AdminNotes() {
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">القسم *</label>
                       <select required value={formData.categoryId || ""} onChange={e => setFormData({...formData, categoryId: parseInt(e.target.value)})} className="w-full p-3 border border-gray-300 rounded-xl focus:border-primary outline-none">
-                        <option value="" disabled>اختر القسم</option>
-                        {categories?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                        <option value="" disabled>اختر القسم الفرعي</option>
+                        {categories?.filter(c => !c.parentId).map(section => {
+                          const subs = categories?.filter(c => c.parentId === section.id) ?? [];
+                          if (subs.length === 0) return null;
+                          return (
+                            <optgroup key={section.id} label={`${section.icon ?? ""} ${section.name}`}>
+                              {subs.map(sub => (
+                                <option key={sub.id} value={sub.id}>{sub.icon ?? ""} {sub.name}</option>
+                              ))}
+                            </optgroup>
+                          );
+                        })}
                       </select>
                     </div>
                     <div>

@@ -19,6 +19,8 @@ export interface Category {
   /** @nullable */
   icon?: string | null;
   order: number;
+  /** @nullable */
+  parentId?: number | null;
   createdAt: string;
 }
 
@@ -27,6 +29,8 @@ export interface CreateCategoryInput {
   /** @nullable */
   icon?: string | null;
   order: number;
+  /** @nullable */
+  parentId?: number | null;
 }
 
 export interface Note {

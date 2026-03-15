@@ -22,6 +22,7 @@ export const GetCategoriesResponseItem = zod.object({
   name: zod.string(),
   icon: zod.string().nullish(),
   order: zod.number(),
+  parentId: zod.number().nullish(),
   createdAt: zod.date(),
 });
 export const GetCategoriesResponse = zod.array(GetCategoriesResponseItem);
@@ -33,6 +34,7 @@ export const CreateCategoryBody = zod.object({
   name: zod.string(),
   icon: zod.string().nullish(),
   order: zod.number(),
+  parentId: zod.number().nullish(),
 });
 
 /**
@@ -46,6 +48,7 @@ export const UpdateCategoryBody = zod.object({
   name: zod.string(),
   icon: zod.string().nullish(),
   order: zod.number(),
+  parentId: zod.number().nullish(),
 });
 
 export const UpdateCategoryResponse = zod.object({
@@ -53,6 +56,7 @@ export const UpdateCategoryResponse = zod.object({
   name: zod.string(),
   icon: zod.string().nullish(),
   order: zod.number(),
+  parentId: zod.number().nullish(),
   createdAt: zod.date(),
 });
 

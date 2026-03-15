@@ -7,6 +7,7 @@ export const categoriesTable = pgTable("categories", {
   name: text("name").notNull(),
   icon: text("icon"),
   order: integer("order").notNull().default(0),
+  parentId: integer("parent_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

@@ -418,6 +418,8 @@ components:
           type: ["string", "null"]
         order:
           type: integer
+        parentId:
+          type: ["integer", "null"]
         createdAt:
           type: string
           format: date-time
@@ -436,6 +438,8 @@ components:
           type: ["string", "null"]
         order:
           type: integer
+        parentId:
+          type: ["integer", "null"]
       required:
         - name
         - order

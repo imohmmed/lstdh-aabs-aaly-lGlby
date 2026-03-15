@@ -12,5 +12,7 @@ export interface Category {
   /** @nullable */
   icon?: string | null;
   order: number;
+  /** @nullable */
+  parentId?: number | null;
   createdAt: Date;
 }
