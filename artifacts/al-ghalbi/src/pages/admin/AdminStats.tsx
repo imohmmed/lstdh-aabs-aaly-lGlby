@@ -1,8 +1,10 @@
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { useGetAllStats } from "@workspace/api-client-react";
 import { Eye, Download, FileText, Star, Loader2 } from "lucide-react";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 export default function AdminStats() {
+  usePageTitle("الإحصائيات");
   const { data: stats, isLoading } = useGetAllStats();
 
   const totalViews = stats?.reduce((acc, curr) => acc + curr.viewCount, 0) || 0;

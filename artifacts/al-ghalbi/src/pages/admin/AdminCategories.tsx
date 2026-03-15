@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { usePageTitle } from "@/hooks/use-page-title";
 import {
   useGetCategories,
   useCreateCategory,
@@ -251,6 +252,7 @@ function SectionCard({
 }
 
 export default function AdminCategories() {
+  usePageTitle("إدارة الأقسام");
   const { data: rawCategories, isLoading } = useGetCategories();
   const createMutation = useCreateCategory();
   const updateMutation = useUpdateCategory();

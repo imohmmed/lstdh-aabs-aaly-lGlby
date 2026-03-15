@@ -1,3 +1,25 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="180" height="180" rx="36" fill="#FF3C00"/>
+  <rect width="180" height="180" rx="40" fill="#1A2744"/>
+  <rect width="180" height="180" rx="40" fill="url(#grad)"/>
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1A2744"/>
+      <stop offset="100%" stop-color="#0f1e3d"/>
+    </linearGradient>
+  </defs>
+  <!-- Open book shape -->
+  <!-- Left page -->
+  <path d="M90 55 C90 55 62 58 44 68 L44 130 C62 120 90 118 90 118 L90 55Z" fill="#0D9488" opacity="0.9"/>
+  <!-- Right page -->
+  <path d="M90 55 C90 55 118 58 136 68 L136 130 C118 120 90 118 90 118 L90 55Z" fill="#14b8a8" opacity="0.85"/>
+  <!-- Spine -->
+  <rect x="88" y="54" width="4" height="65" rx="2" fill="#0f766e"/>
+  <!-- Lines on left page -->
+  <line x1="54" y1="82" x2="83" y2="79" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+  <line x1="54" y1="93" x2="83" y2="90" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+  <line x1="54" y1="104" x2="83" y2="101" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.3"/>
+  <!-- Lines on right page -->
+  <line x1="97" y1="79" x2="126" y2="82" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+  <line x1="97" y1="90" x2="126" y2="93" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+  <line x1="97" y1="101" x2="126" y2="104" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.3"/>
 </svg>

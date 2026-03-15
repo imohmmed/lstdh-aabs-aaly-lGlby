@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { usePageTitle } from "@/hooks/use-page-title";
 import { 
   useGetNotes, 
   useGetCategories,
@@ -15,6 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 
 export default function AdminNotes() {
+  usePageTitle("إدارة الملازم");
   const { data: notes, isLoading: loadingNotes } = useGetNotes();
   const { data: categories } = useGetCategories();
   

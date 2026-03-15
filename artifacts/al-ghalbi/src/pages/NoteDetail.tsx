@@ -10,6 +10,7 @@ import { Link } from "wouter";
 import { useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 export default function NoteDetail() {
   const { id } = useParams();
@@ -20,6 +21,8 @@ export default function NoteDetail() {
   const { data: note, isLoading, isError } = useGetNoteById(noteId);
   const { data: similarNotes } = useGetSimilarNotes(noteId);
   const recordEvent = useRecordEvent();
+
+  usePageTitle(note?.title);
 
   // Record view on mount
   useEffect(() => {

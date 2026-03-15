@@ -3,8 +3,10 @@ import { useGetCategories } from "@workspace/api-client-react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 export default function Home() {
+  usePageTitle("الرئيسية");
   const { data: categories, isLoading: isLoadingCats } = useGetCategories();
   const [, navigate] = useLocation();
 

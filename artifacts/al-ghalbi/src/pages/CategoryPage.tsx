@@ -3,6 +3,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { NoteCard } from "@/components/shared/NoteCard";
 import { useGetCategories, useGetNotes } from "@workspace/api-client-react";
 import { ArrowRight, Library, AlertCircle, Loader2 } from "lucide-react";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 export default function CategoryPage() {
   const { id } = useParams();
@@ -13,6 +14,8 @@ export default function CategoryPage() {
 
   const subCategory = categories?.find((c) => c.id === catId);
   const parentSection = categories?.find((c) => c.id === subCategory?.parentId);
+
+  usePageTitle(subCategory ? `${subCategory.name}` : "القسم");
 
   return (
     <AppLayout>

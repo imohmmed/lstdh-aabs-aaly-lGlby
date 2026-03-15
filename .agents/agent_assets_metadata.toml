@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "OaQIQU5d7_wFTDKEX7sck"
+uri = "file://artifacts/al-ghalbi/public/favicon.svg"
+type = "image"
+title = "الفافيكون الجديد"
