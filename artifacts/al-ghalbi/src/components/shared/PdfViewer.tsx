@@ -19,15 +19,23 @@ export function PdfViewer({ url }: PdfViewerProps) {
   const [containerWidth, setContainerWidth] = useState(600);
 
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
     const measure = () => {
-      if (containerRef.current) {
-        setContainerWidth(containerRef.current.clientWidth - 16);
-      }
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        if (containerRef.current) {
+          const w = containerRef.current.clientWidth - 16;
+          setContainerWidth(Math.max(w, 200));
+        }
+      }, 250);
     };
-    measure();
+    // Initial measure without debounce
+    if (containerRef.current) {
+      setContainerWidth(Math.max(containerRef.current.clientWidth - 16, 200));
+    }
     const ro = new ResizeObserver(measure);
     if (containerRef.current) ro.observe(containerRef.current);
-    return () => ro.disconnect();
+    return () => { ro.disconnect(); clearTimeout(timer); };
   }, []);
 
   return (
