@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-import { Lock, ChevronRight, ChevronLeft, Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -11,10 +11,8 @@ interface PdfViewerProps {
 }
 
 export function PdfViewer({ url }: PdfViewerProps) {
-  // Ensure absolute URL for pdfjs worker to fetch correctly
   const absoluteUrl = url.startsWith("http") ? url : `${window.location.origin}${url}`;
   const [numPages, setNumPages] = useState<number>(0);
-  const [isHidden, setIsHidden] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -32,46 +30,8 @@ export function PdfViewer({ url }: PdfViewerProps) {
     return () => ro.disconnect();
   }, []);
 
-  useEffect(() => {
-    const hide = () => setIsHidden(true);
-    const show = () => setIsHidden(false);
-    const onVis = () => setIsHidden(document.hidden);
-    document.addEventListener("visibilitychange", onVis);
-    window.addEventListener("blur", hide);
-    window.addEventListener("focus", show);
-    return () => {
-      document.removeEventListener("visibilitychange", onVis);
-      window.removeEventListener("blur", hide);
-      window.removeEventListener("focus", show);
-    };
-  }, []);
-
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages);
-    setIsLoading(false);
-  };
-
-  const onDocumentLoadError = () => {
-    setHasError(true);
-    setIsLoading(false);
-  };
-
   return (
-    <div className="relative w-full select-none" ref={containerRef}>
-      {/* Screenshot protection overlay */}
-      {isHidden && (
-        <div className="absolute inset-0 z-50 bg-black flex flex-col items-center justify-center text-white p-6 text-center rounded-2xl">
-          <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mb-6">
-            <Lock className="w-10 h-10 text-white/50" />
-          </div>
-          <h3 className="text-2xl font-bold mb-2">عرض محمي</h3>
-          <p className="text-white/60 max-w-sm">
-            تم إخفاء المحتوى لحمايته. يرجى العودة للتطبيق لمتابعة القراءة.
-          </p>
-        </div>
-      )}
-
-      {/* Loading state */}
+    <div className="relative w-full" ref={containerRef}>
       {isLoading && !hasError && (
         <div className="flex flex-col items-center justify-center py-20 gap-4 text-muted-foreground">
           <Loader2 className="w-10 h-10 animate-spin text-primary" />
@@ -79,7 +39,6 @@ export function PdfViewer({ url }: PdfViewerProps) {
         </div>
       )}
 
-      {/* Error state */}
       {hasError && (
         <div className="flex flex-col items-center justify-center py-20 gap-4 text-destructive">
           <AlertCircle className="w-10 h-10" />
@@ -90,7 +49,6 @@ export function PdfViewer({ url }: PdfViewerProps) {
         </div>
       )}
 
-      {/* Page counter badge */}
       {!isLoading && !hasError && numPages > 0 && (
         <div className="flex items-center justify-center gap-2 mb-3">
           <span className="bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full">
@@ -99,20 +57,16 @@ export function PdfViewer({ url }: PdfViewerProps) {
         </div>
       )}
 
-      {/* PDF Document - all pages stacked */}
       <Document
         file={absoluteUrl}
-        onLoadSuccess={onDocumentLoadSuccess}
-        onLoadError={onDocumentLoadError}
+        onLoadSuccess={({ numPages }) => { setNumPages(numPages); setIsLoading(false); }}
+        onLoadError={() => { setHasError(true); setIsLoading(false); }}
         loading={null}
         error={null}
       >
         <div className="space-y-3">
           {Array.from({ length: numPages }, (_, i) => i + 1).map((pageNum) => (
-            <div
-              key={pageNum}
-              className="relative overflow-hidden rounded-xl shadow-md border border-border"
-            >
+            <div key={pageNum} className="relative overflow-hidden rounded-xl shadow-md border border-border">
               <Page
                 pageNumber={pageNum}
                 width={containerWidth}
@@ -127,27 +81,7 @@ export function PdfViewer({ url }: PdfViewerProps) {
                   </div>
                 }
               />
-              {/* Per-page watermark overlay */}
-              <div
-                className="absolute inset-0 pointer-events-none select-none"
-                style={{ zIndex: 5 }}
-              >
-                <div
-                  className="absolute inset-0 flex items-center justify-center opacity-[0.04]"
-                  style={{
-                    fontSize: containerWidth * 0.045,
-                    fontWeight: "bold",
-                    color: "#000",
-                    transform: "rotate(-35deg)",
-                    whiteSpace: "nowrap",
-                    userSelect: "none",
-                  }}
-                >
-                  الأستاذ عباس علي الغالبي
-                </div>
-              </div>
-              {/* Page number */}
-              <div className="absolute bottom-2 left-2 bg-black/30 text-white text-xs px-2 py-0.5 rounded-full select-none" style={{ zIndex: 6 }}>
+              <div className="absolute bottom-2 left-2 bg-black/30 text-white text-xs px-2 py-0.5 rounded-full">
                 {pageNum} / {numPages}
               </div>
             </div>
