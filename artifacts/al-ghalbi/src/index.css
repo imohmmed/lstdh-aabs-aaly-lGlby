@@ -192,6 +192,7 @@
   
   html {
     direction: rtl;
+    @apply bg-secondary;
   }
 
   body {
