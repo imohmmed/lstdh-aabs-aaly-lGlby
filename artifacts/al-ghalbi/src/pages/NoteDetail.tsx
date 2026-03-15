@@ -7,7 +7,7 @@ import { SharePopover } from "@/components/shared/SharePopover";
 import { NoteCard } from "@/components/shared/NoteCard";
 import { Download, FileText, Info, Eye, ArrowRight, Loader2, HardDrive } from "lucide-react";
 import { Link } from "wouter";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 
@@ -15,6 +15,7 @@ export default function NoteDetail() {
   const { id } = useParams();
   const noteId = parseInt(id || "0", 10);
   const [showPdf, setShowPdf] = useState(false);
+  const pdfSectionRef = useRef<HTMLDivElement>(null);
   
   const { data: note, isLoading, isError } = useGetNoteById(noteId);
   const { data: similarNotes } = useGetSimilarNotes(noteId);
@@ -30,6 +31,9 @@ export default function NoteDetail() {
   const handleShowPdf = () => {
     setShowPdf(true);
     recordEvent.mutateAsync({ data: { noteId, eventType: "preview_click" } }).catch(() => {});
+    setTimeout(() => {
+      pdfSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
   };
 
   const handleDownloadClick = () => {
@@ -179,7 +183,7 @@ export default function NoteDetail() {
           </div>
 
           {/* Left Column - PDF Viewer & Content */}
-          <div className="lg:col-span-8 space-y-12">
+          <div ref={pdfSectionRef} className="lg:col-span-8 space-y-12">
             {showPdf && note.pdfUrl ? (
               <div className="bg-card rounded-3xl p-2 md:p-6 shadow-xl border border-border/50">
                 <div className="flex items-center justify-between mb-6 px-4">
