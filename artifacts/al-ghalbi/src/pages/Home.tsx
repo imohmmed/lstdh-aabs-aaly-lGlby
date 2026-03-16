@@ -35,7 +35,7 @@ function BannerCarousel() {
         ref={videoRef}
         key={video.id}
         src={video.url}
-        className="w-full rounded-[5px] shadow-xl shadow-black/30"
+        className="w-full rounded-2xl shadow-xl shadow-black/30"
         autoPlay
         muted
         loop={videos.length === 1}
