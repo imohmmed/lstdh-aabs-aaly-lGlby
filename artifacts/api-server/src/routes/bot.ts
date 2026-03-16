@@ -6,9 +6,7 @@ import type { Request, Response, NextFunction } from "express";
 
 const router = Router();
 
-const BASE_URL = process.env.REPLIT_DEV_DOMAIN
-  ? `https://${process.env.REPLIT_DEV_DOMAIN}`
-  : process.env.BASE_URL || "";
+const BASE_URL = process.env.SITE_URL || "https://swagy.world";
 
 function toAbsolute(url: string | null | undefined): string | null {
   if (!url) return null;
