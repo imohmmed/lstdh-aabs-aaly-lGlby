@@ -40,6 +40,7 @@ export default function AdminNotes() {
     categoryId: 0,
     version: "",
     telegramDownloadUrl: "",
+    price: "",
     pdfUrl: "",
     coverImageUrl: "",
     pageCount: null as number | null,
@@ -61,6 +62,7 @@ export default function AdminNotes() {
       categoryId: note.categoryId,
       version: note.version || "",
       telegramDownloadUrl: note.telegramDownloadUrl || "",
+      price: note.price || "",
       pdfUrl: note.pdfUrl || "",
       coverImageUrl: note.coverImageUrl || "",
       pageCount: note.pageCount,
@@ -117,6 +119,7 @@ export default function AdminNotes() {
       const payload = {
         ...formData,
         telegramPurchaseUrl: TELEGRAM_PURCHASE_URL,
+        price: formData.price || null,
         pageCount: formData.pageCount || null,
         fileSize: formData.fileSize || null
       };
@@ -206,6 +209,20 @@ export default function AdminNotes() {
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">رابط تيليكرام (التحميل المجاني)</label>
                       <input type="url" value={formData.telegramDownloadUrl} onChange={e => setFormData({...formData, telegramDownloadUrl: e.target.value})} className="w-full p-3 border border-gray-300 rounded-xl outline-none" dir="ltr" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">سعر الملزمة</label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          value={formData.price}
+                          onChange={e => setFormData({...formData, price: e.target.value})}
+                          className="w-full p-3 pe-16 border border-gray-300 rounded-xl focus:border-primary outline-none"
+                          placeholder="مثال: 5000"
+                        />
+                        <span className="absolute inset-y-0 end-3 flex items-center text-gray-500 font-bold pointer-events-none">د.ع</span>
+                      </div>
                     </div>
 
                     {/* File Uploads */}

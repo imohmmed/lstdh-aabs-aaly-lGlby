@@ -51,6 +51,8 @@ export interface Note {
   telegramDownloadUrl?: string | null;
   /** @nullable */
   telegramPurchaseUrl?: string | null;
+  /** @nullable */
+  price?: string | null;
   categoryId: number;
   /** @nullable */
   categoryName?: string | null;
@@ -79,6 +81,8 @@ export interface NoteDetail {
   telegramDownloadUrl?: string | null;
   /** @nullable */
   telegramPurchaseUrl?: string | null;
+  /** @nullable */
+  price?: string | null;
   categoryId: number;
   /** @nullable */
   categoryName?: string | null;
@@ -109,6 +113,8 @@ export interface CreateNoteInput {
   telegramDownloadUrl?: string | null;
   /** @nullable */
   telegramPurchaseUrl?: string | null;
+  /** @nullable */
+  price?: string | null;
   categoryId: number;
 }
 
@@ -131,6 +137,8 @@ export interface UpdateNoteInput {
   telegramDownloadUrl?: string | null;
   /** @nullable */
   telegramPurchaseUrl?: string | null;
+  /** @nullable */
+  price?: string | null;
   /** @nullable */
   categoryId?: number | null;
 }

@@ -14,6 +14,7 @@ export const notesTable = pgTable("notes", {
   pdfUrl: text("pdf_url"),
   telegramDownloadUrl: text("telegram_download_url"),
   telegramPurchaseUrl: text("telegram_purchase_url"),
+  price: text("price"),
   categoryId: integer("category_id").notNull().references(() => categoriesTable.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

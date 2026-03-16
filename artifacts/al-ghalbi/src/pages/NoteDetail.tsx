@@ -174,7 +174,10 @@ export default function NoteDetail() {
                       rel="noopener noreferrer"
                       className="w-full bg-accent hover:bg-accent/90 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-accent/20 mt-4"
                     >
-                      <Info className="w-5 h-5" /> شراء النسخة الأصلية (ملازم)
+                      <Info className="w-5 h-5" />
+                      {note.price
+                        ? `للشراء (${note.price} د.ع)`
+                        : "للشراء"}
                     </a>
                   )}
                 </div>

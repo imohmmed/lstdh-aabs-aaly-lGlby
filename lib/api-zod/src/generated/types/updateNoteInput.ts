@@ -26,5 +26,7 @@ export interface UpdateNoteInput {
   /** @nullable */
   telegramPurchaseUrl?: string | null;
   /** @nullable */
+  price?: string | null;
+  /** @nullable */
   categoryId?: number | null;
 }

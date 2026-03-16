@@ -24,6 +24,8 @@ export interface NoteDetail {
   telegramDownloadUrl?: string | null;
   /** @nullable */
   telegramPurchaseUrl?: string | null;
+  /** @nullable */
+  price?: string | null;
   categoryId: number;
   /** @nullable */
   categoryName?: string | null;

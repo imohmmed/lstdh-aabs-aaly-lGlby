@@ -467,6 +467,8 @@ components:
           type: ["string", "null"]
         telegramPurchaseUrl:
           type: ["string", "null"]
+        price:
+          type: ["string", "null"]
         categoryId:
           type: integer
         categoryName:
@@ -512,6 +514,8 @@ components:
         telegramDownloadUrl:
           type: ["string", "null"]
         telegramPurchaseUrl:
+          type: ["string", "null"]
+        price:
           type: ["string", "null"]
         categoryId:
           type: integer
@@ -566,6 +570,8 @@ components:
           type: ["string", "null"]
         telegramPurchaseUrl:
           type: ["string", "null"]
+        price:
+          type: ["string", "null"]
         categoryId:
           type: integer
       required:
@@ -593,6 +599,8 @@ components:
         telegramDownloadUrl:
           type: ["string", "null"]
         telegramPurchaseUrl:
+          type: ["string", "null"]
+        price:
           type: ["string", "null"]
         categoryId:
           type: ["integer", "null"]

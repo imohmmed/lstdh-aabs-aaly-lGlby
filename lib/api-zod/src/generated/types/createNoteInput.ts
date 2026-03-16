@@ -23,5 +23,7 @@ export interface CreateNoteInput {
   telegramDownloadUrl?: string | null;
   /** @nullable */
   telegramPurchaseUrl?: string | null;
+  /** @nullable */
+  price?: string | null;
   categoryId: number;
 }

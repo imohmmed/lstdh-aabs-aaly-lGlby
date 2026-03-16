@@ -90,6 +90,7 @@ export const GetNotesResponseItem = zod.object({
   pdfUrl: zod.string().nullish(),
   telegramDownloadUrl: zod.string().nullish(),
   telegramPurchaseUrl: zod.string().nullish(),
+  price: zod.string().nullish(),
   categoryId: zod.number(),
   categoryName: zod.string().nullish(),
   averageRating: zod.number().nullish(),
@@ -112,6 +113,7 @@ export const CreateNoteBody = zod.object({
   pdfUrl: zod.string().nullish(),
   telegramDownloadUrl: zod.string().nullish(),
   telegramPurchaseUrl: zod.string().nullish(),
+  price: zod.string().nullish(),
   categoryId: zod.number(),
 });
 
@@ -133,6 +135,7 @@ export const GetNoteByIdResponse = zod.object({
   pdfUrl: zod.string().nullish(),
   telegramDownloadUrl: zod.string().nullish(),
   telegramPurchaseUrl: zod.string().nullish(),
+  price: zod.string().nullish(),
   categoryId: zod.number(),
   categoryName: zod.string().nullish(),
   averageRating: zod.number().nullish(),
@@ -161,6 +164,7 @@ export const UpdateNoteBody = zod.object({
   pdfUrl: zod.string().nullish(),
   telegramDownloadUrl: zod.string().nullish(),
   telegramPurchaseUrl: zod.string().nullish(),
+  price: zod.string().nullish(),
   categoryId: zod.number().nullish(),
 });
 
@@ -175,6 +179,7 @@ export const UpdateNoteResponse = zod.object({
   pdfUrl: zod.string().nullish(),
   telegramDownloadUrl: zod.string().nullish(),
   telegramPurchaseUrl: zod.string().nullish(),
+  price: zod.string().nullish(),
   categoryId: zod.number(),
   categoryName: zod.string().nullish(),
   averageRating: zod.number().nullish(),
@@ -212,6 +217,7 @@ export const GetSimilarNotesResponseItem = zod.object({
   pdfUrl: zod.string().nullish(),
   telegramDownloadUrl: zod.string().nullish(),
   telegramPurchaseUrl: zod.string().nullish(),
+  price: zod.string().nullish(),
   categoryId: zod.number(),
   categoryName: zod.string().nullish(),
   averageRating: zod.number().nullish(),
