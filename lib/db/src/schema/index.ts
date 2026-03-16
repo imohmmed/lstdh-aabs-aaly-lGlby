@@ -3,3 +3,4 @@ export * from "./notes";
 export * from "./ratings";
 export * from "./stats";
 export * from "./banner";
+export * from "./settings";

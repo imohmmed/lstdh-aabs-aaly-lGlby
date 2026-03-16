@@ -7,6 +7,7 @@ import ratingsRouter from "./ratings";
 import statsRouter from "./stats";
 import bannerRouter from "./banner";
 import authRouter from "./auth";
+import settingsRouter from "./settings";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use("/ratings", ratingsRouter);
 router.use("/stats", statsRouter);
 router.use("/banner-videos", bannerRouter);
 router.use("/auth", authRouter);
+router.use("/settings", settingsRouter);
 
 export default router;

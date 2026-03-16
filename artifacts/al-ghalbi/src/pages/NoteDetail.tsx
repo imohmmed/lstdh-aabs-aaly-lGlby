@@ -5,9 +5,92 @@ import { PdfViewer } from "@/components/shared/PdfViewer";
 import { StarRating } from "@/components/shared/StarRating";
 import { SharePopover } from "@/components/shared/SharePopover";
 import { NoteCard } from "@/components/shared/NoteCard";
-import { Download, FileText, Info, Eye, ArrowRight, Loader2, HardDrive } from "lucide-react";
+import { Download, FileText, Info, Eye, ArrowRight, Loader2, HardDrive, X, MessageCircle, Send } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
+function useSiteSettings() {
+  return useQuery({
+    queryKey: ["site-settings"],
+    queryFn: async () => {
+      const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+      const res = await fetch(`${base}/api/settings`);
+      if (!res.ok) throw new Error("Failed to fetch settings");
+      return res.json() as Promise<Record<string, string>>;
+    },
+    staleTime: 60_000,
+  });
+}
+
+function PurchaseModal({
+  note,
+  onClose,
+}: {
+  note: { title: string; price?: string | null };
+  onClose: () => void;
+}) {
+  const { data: settings } = useSiteSettings();
+  const whatsapp = settings?.whatsapp || "+9647766699669";
+  const telegram = settings?.telegram || "https://t.me/mohmmedswag";
+
+  const message = encodeURIComponent(
+    `مرحباً، أريد شراء ملزمة: ${note.title}${note.price ? ` (${note.price} د.ع)` : ""}`
+  );
+  const waUrl = `https://wa.me/${whatsapp.replace(/\D/g, "")}?text=${message}`;
+  const tgUrl = telegram.startsWith("http") ? telegram : `https://t.me/${telegram.replace(/^@/, "")}`;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-sm bg-card rounded-3xl shadow-2xl border border-border/50 overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+        dir="rtl"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border/50">
+          <div>
+            <p className="font-bold text-foreground text-base">للشراء تواصل معنا</p>
+            {note.price && (
+              <p className="text-primary font-bold text-sm mt-0.5">{note.price} د.ع</p>
+            )}
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-full hover:bg-secondary/50 text-muted-foreground transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Options */}
+        <div className="p-4 space-y-3">
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-4 w-full bg-[#25D366] hover:bg-[#20BC5A] text-white font-bold py-4 px-5 rounded-2xl transition-all shadow-lg shadow-[#25D366]/25 active:scale-95"
+          >
+            <MessageCircle className="w-6 h-6 flex-shrink-0" />
+            <span className="text-base">واتساب</span>
+          </a>
+          <a
+            href={tgUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-4 w-full bg-[#2AABEE] hover:bg-[#1A9BE0] text-white font-bold py-4 px-5 rounded-2xl transition-all shadow-lg shadow-[#2AABEE]/25 active:scale-95"
+          >
+            <Send className="w-6 h-6 flex-shrink-0" />
+            <span className="text-base">تيليكرام</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { usePageTitle } from "@/hooks/use-page-title";
@@ -16,6 +99,7 @@ export default function NoteDetail() {
   const { id } = useParams();
   const noteId = parseInt(id || "0", 10);
   const [showPdf, setShowPdf] = useState(false);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const pdfSectionRef = useRef<HTMLDivElement>(null);
   
   const { data: note, isLoading, isError } = useGetNoteById(noteId);
@@ -167,19 +251,13 @@ export default function NoteDetail() {
                     </a>
                   )}
 
-                  {note.telegramPurchaseUrl && (
-                    <a 
-                      href={note.telegramPurchaseUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full bg-accent hover:bg-accent/90 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-accent/20 mt-4"
-                    >
-                      <Info className="w-5 h-5" />
-                      {note.price
-                        ? `للشراء (${note.price} د.ع)`
-                        : "للشراء"}
-                    </a>
-                  )}
+                  <button
+                    onClick={() => setShowPurchaseModal(true)}
+                    className="w-full bg-accent hover:bg-accent/90 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-accent/20 mt-4 active:scale-95"
+                  >
+                    <Info className="w-5 h-5" />
+                    {note.price ? `للشراء (${note.price} د.ع)` : "للشراء"}
+                  </button>
                 </div>
               </div>
             </div>
@@ -249,6 +327,12 @@ export default function NoteDetail() {
           </div>
         </div>
       </div>
+      {showPurchaseModal && note && (
+        <PurchaseModal
+          note={{ title: note.title, price: note.price }}
+          onClose={() => setShowPurchaseModal(false)}
+        />
+      )}
     </AppLayout>
   );
 }

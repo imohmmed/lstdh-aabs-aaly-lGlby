@@ -11,6 +11,7 @@ import AdminStats from "@/pages/admin/AdminStats";
 import AdminCategories from "@/pages/admin/AdminCategories";
 import AdminNotes from "@/pages/admin/AdminNotes";
 import AdminBanner from "@/pages/admin/AdminBanner";
+import AdminSettings from "@/pages/admin/AdminSettings";
 import AdminLogin from "@/pages/admin/AdminLogin";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 
@@ -53,6 +54,9 @@ function Router() {
         </Route>
         <Route path="/admin/banner">
           <AdminGuard><AdminBanner /></AdminGuard>
+        </Route>
+        <Route path="/admin/settings">
+          <AdminGuard><AdminSettings /></AdminGuard>
         </Route>
 
         <Route component={NotFound} />

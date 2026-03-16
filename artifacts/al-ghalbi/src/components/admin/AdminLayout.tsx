@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { BarChart3, FolderTree, FileText, BookOpen, Home, Menu, X, Video, LogOut } from "lucide-react";
+import { BarChart3, FolderTree, FileText, BookOpen, Home, Menu, X, Video, LogOut, Settings } from "lucide-react";
 
 export function AdminLayout({ children }: { children: ReactNode }) {
   const [location, navigate] = useLocation();
@@ -16,6 +16,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
     { href: "/admin/categories", icon: FolderTree, label: "إدارة الأقسام" },
     { href: "/admin/notes", icon: FileText, label: "إدارة الملازم" },
     { href: "/admin/banner", icon: Video, label: "بانر" },
+    { href: "/admin/settings", icon: Settings, label: "الإعدادات" },
   ];
 
   const closeSidebar = () => setSidebarOpen(false);
