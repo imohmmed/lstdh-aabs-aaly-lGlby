@@ -1,9 +1,21 @@
 import { useParams, Link } from "wouter";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { NoteCard } from "@/components/shared/NoteCard";
+import { NoteListCard } from "@/components/shared/NoteListCard";
 import { useGetCategories, useGetNotes } from "@workspace/api-client-react";
-import { ArrowRight, Library, AlertCircle, Loader2 } from "lucide-react";
+import { ArrowRight, Library, AlertCircle, Loader2, LayoutGrid, List } from "lucide-react";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { useState } from "react";
+
+type ViewMode = "grid" | "list";
+
+function getStoredView(): ViewMode {
+  try {
+    const v = localStorage.getItem("notes_view");
+    if (v === "list" || v === "grid") return v;
+  } catch {}
+  return "grid";
+}
 
 export default function CategoryPage() {
   const { id } = useParams();
@@ -16,6 +28,13 @@ export default function CategoryPage() {
   const parentSection = categories?.find((c) => c.id === subCategory?.parentId);
 
   usePageTitle(subCategory ? `${subCategory.name}` : "القسم");
+
+  const [view, setView] = useState<ViewMode>(getStoredView);
+
+  const switchView = (v: ViewMode) => {
+    setView(v);
+    try { localStorage.setItem("notes_view", v); } catch {}
+  };
 
   return (
     <AppLayout>
@@ -58,18 +77,46 @@ export default function CategoryPage() {
         </div>
       </section>
 
-      {/* Notes Grid */}
+      {/* Notes */}
       <section className="py-12 pb-24 -mt-10 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-card rounded-3xl p-6 md:p-8 shadow-xl border border-border/50 backdrop-blur-xl min-h-[400px]">
-            <div className="flex items-center justify-between mb-8">
+
+            {/* Header row */}
+            <div className="flex items-center justify-between mb-8 gap-4">
               <h2 className="font-display text-xl font-bold text-foreground flex items-center gap-2">
                 <Library className="w-6 h-6 text-primary" />
                 الملازم
+                <span className="text-sm text-muted-foreground font-normal bg-secondary/5 px-3 py-1 rounded-full ms-1">
+                  {notes?.length || 0} ملزمة
+                </span>
               </h2>
-              <span className="text-sm text-muted-foreground font-medium bg-secondary/5 px-3 py-1 rounded-full">
-                {notes?.length || 0} ملزمة
-              </span>
+
+              {/* View toggle */}
+              <div className="flex items-center gap-1 p-1 bg-secondary/8 border border-border rounded-xl">
+                <button
+                  onClick={() => switchView("grid")}
+                  title="عرض الشبكة"
+                  className={`p-2 rounded-lg transition-all duration-200 ${
+                    view === "grid"
+                      ? "bg-primary text-white shadow-md shadow-primary/20"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/10"
+                  }`}
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => switchView("list")}
+                  title="عرض القائمة"
+                  className={`p-2 rounded-lg transition-all duration-200 ${
+                    view === "list"
+                      ? "bg-primary text-white shadow-md shadow-primary/20"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/10"
+                  }`}
+                >
+                  <List className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             {isLoading ? (
@@ -77,11 +124,19 @@ export default function CategoryPage() {
                 <Loader2 className="w-10 h-10 text-primary animate-spin" />
               </div>
             ) : notes && notes.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {notes.map((note, idx) => (
-                  <NoteCard key={note.id} note={note} index={idx} />
-                ))}
-              </div>
+              view === "grid" ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  {notes.map((note, idx) => (
+                    <NoteCard key={note.id} note={note} index={idx} />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4">
+                  {notes.map((note, idx) => (
+                    <NoteListCard key={note.id} note={note} index={idx} />
+                  ))}
+                </div>
+              )
             ) : (
               <div className="flex flex-col items-center justify-center py-20 text-center">
                 <div className="w-20 h-20 bg-secondary/5 rounded-full flex items-center justify-center mb-6">
