@@ -13,7 +13,8 @@ app.use(express.urlencoded({ extended: true }));
 const BUCKET_ID = process.env.DEFAULT_OBJECT_STORAGE_BUCKET_ID || "";
 app.get("/api/uploads/*objectPath", async (req, res) => {
   try {
-    const filename = (req.params as any).objectPath;
+    const raw = (req.params as any).objectPath;
+    const filename = Array.isArray(raw) ? raw.join("/") : String(raw ?? "");
     if (!filename) return res.status(400).send("Missing path");
     const bucket = objectStorageClient.bucket(BUCKET_ID);
     const file = bucket.file(`uploads/${filename}`);
