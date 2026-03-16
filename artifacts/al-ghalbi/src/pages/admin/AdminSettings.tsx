@@ -184,6 +184,16 @@ export default function AdminSettings() {
                   </div>
 
                   <div className="border-t border-gray-700 pt-3">
+                    <p className="text-yellow-400 mb-1">## فلاتر اختيارية (query params)</p>
+                    <p className="text-gray-400">?category=<span className="text-blue-400">سادس</span>      ← اسم القسم</p>
+                    <p className="text-gray-400">?categoryId=<span className="text-blue-400">1</span>       ← رقم القسم</p>
+                    <p className="text-gray-400">?teacher=<span className="text-blue-400">عباس</span>       ← اسم الأستاذ</p>
+                    <p className="text-gray-400">?search=<span className="text-blue-400">ملزمة</span>       ← عنوان الملزمة</p>
+                    <p className="text-gray-400">?hasFile=<span className="text-blue-400">true</span>       ← فقط اللي عندها PDF</p>
+                    <p className="text-white mt-1 break-all">مثال: /api/bot/notes?category=سادس&amp;hasFile=true</p>
+                  </div>
+
+                  <div className="border-t border-gray-700 pt-3">
                     <p className="text-yellow-400 mb-1">## الحقول المُرجَعة لكل ملزمة</p>
                     <p className="text-gray-400">id, title, category, version,</p>
                     <p className="text-gray-400">teacherName, price, pageCount,</p>

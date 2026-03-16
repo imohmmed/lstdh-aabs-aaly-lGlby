@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { notesTable, categoriesTable, ratingsTable, siteSettingsTable } from "@workspace/db/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, ilike, like } from "drizzle-orm";
 import type { Request, Response, NextFunction } from "express";
 
 const router = Router();
@@ -92,12 +92,41 @@ async function getNoteData(noteId: number) {
   };
 }
 
-/* GET /api/bot/notes — all notes */
+/* GET /api/bot/notes — all notes with optional filters
+   Query params:
+     ?category=سادس       — filter by category name (partial, case-insensitive)
+     ?categoryId=1        — filter by category ID (exact)
+     ?teacher=عباس        — filter by teacher name (partial, case-insensitive)
+     ?search=ملزمة        — filter by note title (partial, case-insensitive)
+     ?hasFile=true        — only notes that have a PDF file
+*/
 router.get("/notes", requireApiKey, async (req, res) => {
   try {
+    const { category, categoryId, teacher, search, hasFile } = req.query as Record<string, string>;
+
+    const conditions: any[] = [];
+
+    if (categoryId) {
+      conditions.push(eq(notesTable.categoryId, Number(categoryId)));
+    }
+    if (category) {
+      conditions.push(ilike(categoriesTable.name, `%${category}%`));
+    }
+    if (teacher) {
+      conditions.push(ilike(notesTable.teacherName, `%${teacher}%`));
+    }
+    if (search) {
+      conditions.push(ilike(notesTable.title, `%${search}%`));
+    }
+    if (hasFile === "true") {
+      conditions.push(sql`${notesTable.pdfUrl} IS NOT NULL AND ${notesTable.pdfUrl} != ''`);
+    }
+
     const notes = await db
       .select({ id: notesTable.id })
       .from(notesTable)
+      .leftJoin(categoriesTable, eq(notesTable.categoryId, categoriesTable.id))
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
       .orderBy(notesTable.updatedAt);
 
     const results = await Promise.all(notes.map((n) => getNoteData(n.id)));
