@@ -25,7 +25,7 @@ export function NoteListCard({ note, index }: NoteListCardProps) {
       className="group flex flex-row bg-card rounded-2xl border border-border/60 shadow-md shadow-black/5 overflow-hidden hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30 transition-all duration-300"
     >
       {/* Cover — right side (RTL start) */}
-      <div className="relative flex-shrink-0 w-28 sm:w-36 md:w-44 bg-secondary/5 overflow-hidden">
+      <div className="relative flex-shrink-0 w-20 sm:w-32 md:w-44 bg-secondary/5 overflow-hidden">
         {note.coverImageUrl ? (
           <img
             src={note.coverImageUrl}
