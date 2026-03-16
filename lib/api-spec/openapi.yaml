@@ -389,6 +389,53 @@ paths:
                 items:
                   $ref: "#/components/schemas/NoteStats"
 
+  /banner-videos:
+    get:
+      operationId: getBannerVideos
+      tags: [banner]
+      summary: Get all banner videos
+      responses:
+        "200":
+          description: List of banner videos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BannerVideo"
+    post:
+      operationId: createBannerVideo
+      tags: [banner]
+      summary: Add a banner video
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBannerVideoInput"
+      responses:
+        "201":
+          description: Created banner video
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BannerVideo"
+
+  /banner-videos/{id}:
+    delete:
+      operationId: deleteBannerVideo
+      tags: [banner]
+      summary: Delete a banner video
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
 components:
   schemas:
     HealthStatus:
@@ -710,3 +757,31 @@ components:
         - downloadClickCount
         - previewClickCount
         - ratingCount
+
+    BannerVideo:
+      type: object
+      properties:
+        id:
+          type: integer
+        url:
+          type: string
+        order:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - url
+        - order
+        - createdAt
+
+    CreateBannerVideoInput:
+      type: object
+      properties:
+        url:
+          type: string
+        order:
+          type: integer
+      required:
+        - url

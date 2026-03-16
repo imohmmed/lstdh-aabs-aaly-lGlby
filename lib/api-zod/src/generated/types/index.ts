@@ -6,7 +6,9 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from "./bannerVideo";
 export * from "./category";
+export * from "./createBannerVideoInput";
 export * from "./createCategoryInput";
 export * from "./createNoteInput";
 export * from "./deleteResult";

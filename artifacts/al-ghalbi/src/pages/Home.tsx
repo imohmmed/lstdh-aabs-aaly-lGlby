@@ -1,9 +1,64 @@
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useGetCategories } from "@workspace/api-client-react";
+import { useGetCategories, useGetBannerVideos } from "@workspace/api-client-react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { useEffect, useRef, useState } from "react";
+
+function BannerCarousel() {
+  const { data: videos = [] } = useGetBannerVideos();
+  const [current, setCurrent] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videos.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrent(prev => (prev + 1) % videos.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [videos.length]);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.load();
+      videoRef.current.play().catch(() => {});
+    }
+  }, [current]);
+
+  if (videos.length === 0) return null;
+
+  const video = videos[current];
+  return (
+    <div className="w-full max-w-2xl mx-auto mb-8 mt-4">
+      <video
+        ref={videoRef}
+        key={video.id}
+        src={video.url}
+        className="w-full rounded-[5px] shadow-xl shadow-black/30"
+        autoPlay
+        muted
+        loop={videos.length === 1}
+        playsInline
+        controls={false}
+        style={{ display: "block" }}
+      />
+      {videos.length > 1 && (
+        <div className="flex justify-center gap-1.5 mt-3">
+          {videos.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === current ? "w-6 bg-white" : "w-1.5 bg-white/40"
+              }`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Home() {
   usePageTitle("الرئيسية");
@@ -44,6 +99,7 @@ export default function Home() {
                 ملازم الأستاذ عباس
               </span>
             </h1>
+            <BannerCarousel />
             <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed text-balance">
               مكتبة شاملة من الملازم الدراسية، الملخصات، والأسئلة الوزارية مصممة لمساعدتك على تحقيق أعلى الدرجات.
             </p>

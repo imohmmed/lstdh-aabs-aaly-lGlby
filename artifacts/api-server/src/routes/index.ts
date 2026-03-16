@@ -5,6 +5,7 @@ import notesRouter from "./notes";
 import uploadRouter from "./upload";
 import ratingsRouter from "./ratings";
 import statsRouter from "./stats";
+import bannerRouter from "./banner";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use("/notes", notesRouter);
 router.use("/upload", uploadRouter);
 router.use("/ratings", ratingsRouter);
 router.use("/stats", statsRouter);
+router.use("/banner-videos", bannerRouter);
 
 export default router;

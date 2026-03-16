@@ -199,6 +199,18 @@ export interface NoteStats {
   ratingCount: number;
 }
 
+export interface BannerVideo {
+  id: number;
+  url: string;
+  order: number;
+  createdAt: string;
+}
+
+export interface CreateBannerVideoInput {
+  url: string;
+  order?: number;
+}
+
 export type GetNotesParams = {
   categoryId?: number;
   search?: string;

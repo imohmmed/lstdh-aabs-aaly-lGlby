@@ -17,7 +17,9 @@ import type {
 } from "@tanstack/react-query";
 
 import type {
+  BannerVideo,
   Category,
+  CreateBannerVideoInput,
   CreateCategoryInput,
   CreateNoteInput,
   DeleteResult,
@@ -1574,3 +1576,248 @@ export function useGetAllStats<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * @summary Get all banner videos
+ */
+export const getGetBannerVideosUrl = () => {
+  return `/api/banner-videos`;
+};
+
+export const getBannerVideos = async (
+  options?: RequestInit,
+): Promise<BannerVideo[]> => {
+  return customFetch<BannerVideo[]>(getGetBannerVideosUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetBannerVideosQueryKey = () => {
+  return [`/api/banner-videos`] as const;
+};
+
+export const getGetBannerVideosQueryOptions = <
+  TData = Awaited<ReturnType<typeof getBannerVideos>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getBannerVideos>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetBannerVideosQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getBannerVideos>>> = ({
+    signal,
+  }) => getBannerVideos({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getBannerVideos>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetBannerVideosQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getBannerVideos>>
+>;
+export type GetBannerVideosQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get all banner videos
+ */
+
+export function useGetBannerVideos<
+  TData = Awaited<ReturnType<typeof getBannerVideos>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getBannerVideos>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetBannerVideosQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Add a banner video
+ */
+export const getCreateBannerVideoUrl = () => {
+  return `/api/banner-videos`;
+};
+
+export const createBannerVideo = async (
+  createBannerVideoInput: CreateBannerVideoInput,
+  options?: RequestInit,
+): Promise<BannerVideo> => {
+  return customFetch<BannerVideo>(getCreateBannerVideoUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(createBannerVideoInput),
+  });
+};
+
+export const getCreateBannerVideoMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createBannerVideo>>,
+    TError,
+    { data: BodyType<CreateBannerVideoInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createBannerVideo>>,
+  TError,
+  { data: BodyType<CreateBannerVideoInput> },
+  TContext
+> => {
+  const mutationKey = ["createBannerVideo"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createBannerVideo>>,
+    { data: BodyType<CreateBannerVideoInput> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createBannerVideo(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateBannerVideoMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createBannerVideo>>
+>;
+export type CreateBannerVideoMutationBody = BodyType<CreateBannerVideoInput>;
+export type CreateBannerVideoMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Add a banner video
+ */
+export const useCreateBannerVideo = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createBannerVideo>>,
+    TError,
+    { data: BodyType<CreateBannerVideoInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createBannerVideo>>,
+  TError,
+  { data: BodyType<CreateBannerVideoInput> },
+  TContext
+> => {
+  return useMutation(getCreateBannerVideoMutationOptions(options));
+};
+
+/**
+ * @summary Delete a banner video
+ */
+export const getDeleteBannerVideoUrl = (id: number) => {
+  return `/api/banner-videos/${id}`;
+};
+
+export const deleteBannerVideo = async (
+  id: number,
+  options?: RequestInit,
+): Promise<void> => {
+  return customFetch<void>(getDeleteBannerVideoUrl(id), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getDeleteBannerVideoMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteBannerVideo>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteBannerVideo>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["deleteBannerVideo"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteBannerVideo>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return deleteBannerVideo(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteBannerVideoMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteBannerVideo>>
+>;
+
+export type DeleteBannerVideoMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Delete a banner video
+ */
+export const useDeleteBannerVideo = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteBannerVideo>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteBannerVideo>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  return useMutation(getDeleteBannerVideoMutationOptions(options));
+};

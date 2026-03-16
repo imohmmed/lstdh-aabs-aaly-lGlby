@@ -317,3 +317,29 @@ export const GetAllStatsResponseItem = zod.object({
   ratingCount: zod.number(),
 });
 export const GetAllStatsResponse = zod.array(GetAllStatsResponseItem);
+
+/**
+ * @summary Get all banner videos
+ */
+export const GetBannerVideosResponseItem = zod.object({
+  id: zod.number(),
+  url: zod.string(),
+  order: zod.number(),
+  createdAt: zod.date(),
+});
+export const GetBannerVideosResponse = zod.array(GetBannerVideosResponseItem);
+
+/**
+ * @summary Add a banner video
+ */
+export const CreateBannerVideoBody = zod.object({
+  url: zod.string(),
+  order: zod.number().optional(),
+});
+
+/**
+ * @summary Delete a banner video
+ */
+export const DeleteBannerVideoParams = zod.object({
+  id: zod.coerce.number(),
+});

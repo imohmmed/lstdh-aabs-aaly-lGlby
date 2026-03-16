@@ -10,6 +10,7 @@ import CategoryPage from "@/pages/CategoryPage";
 import AdminStats from "@/pages/admin/AdminStats";
 import AdminCategories from "@/pages/admin/AdminCategories";
 import AdminNotes from "@/pages/admin/AdminNotes";
+import AdminBanner from "@/pages/admin/AdminBanner";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,6 +42,7 @@ function Router() {
         <Route path="/admin" component={AdminStats} />
         <Route path="/admin/categories" component={AdminCategories} />
         <Route path="/admin/notes" component={AdminNotes} />
+        <Route path="/admin/banner" component={AdminBanner} />
 
         <Route component={NotFound} />
       </Switch>
