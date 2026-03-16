@@ -69,15 +69,6 @@ function PurchaseModal({
         {/* Options */}
         <div className="p-4 space-y-3">
           <a
-            href={waUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-4 w-full bg-[#25D366] hover:bg-[#20BC5A] text-white font-bold py-4 px-5 rounded-2xl transition-all shadow-lg shadow-[#25D366]/25 active:scale-95"
-          >
-            <MessageCircle className="w-6 h-6 flex-shrink-0" />
-            <span className="text-base">واتساب</span>
-          </a>
-          <a
             href={tgUrl}
             target="_blank"
             rel="noopener noreferrer"
@@ -85,6 +76,15 @@ function PurchaseModal({
           >
             <Send className="w-6 h-6 flex-shrink-0" />
             <span className="text-base">تيليكرام</span>
+          </a>
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-4 w-full bg-[#25D366] hover:bg-[#20BC5A] text-white font-bold py-4 px-5 rounded-2xl transition-all shadow-lg shadow-[#25D366]/25 active:scale-95"
+          >
+            <MessageCircle className="w-6 h-6 flex-shrink-0" />
+            <span className="text-base">واتساب</span>
           </a>
         </div>
       </div>
