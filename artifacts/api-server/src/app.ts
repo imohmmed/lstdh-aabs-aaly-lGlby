@@ -23,6 +23,10 @@ app.get("/api/uploads/*objectPath", async (req, res) => {
     const contentType = (metadata.contentType as string) || "application/octet-stream";
     res.set("Content-Type", contentType);
     res.set("Cache-Control", "public, max-age=31536000, immutable");
+    if (contentType === "application/pdf" || filename.endsWith(".pdf")) {
+      const safeName = filename.split("/").pop() || filename;
+      res.set("Content-Disposition", `attachment; filename="${safeName}"`);
+    }
     file.createReadStream().pipe(res);
   } catch (err) {
     console.error("Serve upload error:", err);

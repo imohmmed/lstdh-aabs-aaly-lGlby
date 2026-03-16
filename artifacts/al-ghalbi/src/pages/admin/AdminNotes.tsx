@@ -11,7 +11,7 @@ import {
   useUploadImage
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Plus, Edit2, Trash2, Loader2, FileText, Image as ImageIcon, Upload } from "lucide-react";
+import { Plus, Edit2, Trash2, Loader2, FileText, Image as ImageIcon, Upload, Copy, Check } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
@@ -49,6 +49,18 @@ export default function AdminNotes() {
   
   const [formData, setFormData] = useState(defaultForm);
   const [isUploading, setIsUploading] = useState(false);
+  const [copiedId, setCopiedId] = useState<number | null>(null);
+
+  const handleCopyPdf = (note: any) => {
+    if (!note.pdfUrl) return;
+    const fullUrl = note.pdfUrl.startsWith("http")
+      ? note.pdfUrl
+      : `${window.location.origin}${note.pdfUrl}`;
+    navigator.clipboard.writeText(fullUrl).then(() => {
+      setCopiedId(note.id);
+      setTimeout(() => setCopiedId(null), 2000);
+    });
+  };
 
   const resetForm = () => {
     setFormData(defaultForm);
@@ -294,6 +306,21 @@ export default function AdminNotes() {
 
                 {/* Actions */}
                 <div className="flex items-center gap-1 flex-shrink-0">
+                  {note.pdfUrl && (
+                    <button
+                      onClick={() => handleCopyPdf(note)}
+                      title="نسخ رابط PDF"
+                      className={`p-2.5 rounded-xl transition-colors ${
+                        copiedId === note.id
+                          ? "text-green-600 bg-green-50"
+                          : "text-gray-500 hover:bg-gray-100"
+                      }`}
+                    >
+                      {copiedId === note.id
+                        ? <Check className="w-4 h-4" />
+                        : <Copy className="w-4 h-4" />}
+                    </button>
+                  )}
                   <button
                     onClick={() => handleOpenEdit(note)}
                     className="p-2.5 text-blue-600 hover:bg-blue-50 rounded-xl transition-colors"
