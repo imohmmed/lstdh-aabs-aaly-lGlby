@@ -14,7 +14,7 @@ function getStoredView(): ViewMode {
     const v = localStorage.getItem("notes_view");
     if (v === "list" || v === "grid") return v;
   } catch {}
-  return "grid";
+  return "list";
 }
 
 export default function CategoryPage() {
