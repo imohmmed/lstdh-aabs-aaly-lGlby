@@ -11,6 +11,8 @@ import AdminStats from "@/pages/admin/AdminStats";
 import AdminCategories from "@/pages/admin/AdminCategories";
 import AdminNotes from "@/pages/admin/AdminNotes";
 import AdminBanner from "@/pages/admin/AdminBanner";
+import AdminLogin from "@/pages/admin/AdminLogin";
+import { AdminGuard } from "@/components/admin/AdminGuard";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,10 +41,19 @@ function Router() {
         <Route path="/note/:id" component={NoteDetail} />
 
         {/* Admin Routes */}
-        <Route path="/admin" component={AdminStats} />
-        <Route path="/admin/categories" component={AdminCategories} />
-        <Route path="/admin/notes" component={AdminNotes} />
-        <Route path="/admin/banner" component={AdminBanner} />
+        <Route path="/admin/login" component={AdminLogin} />
+        <Route path="/admin">
+          <AdminGuard><AdminStats /></AdminGuard>
+        </Route>
+        <Route path="/admin/categories">
+          <AdminGuard><AdminCategories /></AdminGuard>
+        </Route>
+        <Route path="/admin/notes">
+          <AdminGuard><AdminNotes /></AdminGuard>
+        </Route>
+        <Route path="/admin/banner">
+          <AdminGuard><AdminBanner /></AdminGuard>
+        </Route>
 
         <Route component={NotFound} />
       </Switch>

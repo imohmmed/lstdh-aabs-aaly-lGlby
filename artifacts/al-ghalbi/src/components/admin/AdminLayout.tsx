@@ -1,10 +1,15 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { BarChart3, FolderTree, FileText, BookOpen, Home, Menu, X, Video } from "lucide-react";
+import { BarChart3, FolderTree, FileText, BookOpen, Home, Menu, X, Video, LogOut } from "lucide-react";
 
 export function AdminLayout({ children }: { children: ReactNode }) {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("admin_token");
+    navigate("/admin/login");
+  };
 
   const navItems = [
     { href: "/admin", icon: BarChart3, label: "الإحصائيات" },
@@ -84,7 +89,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
           })}
         </nav>
 
-        <div className="p-4 border-t border-white/10">
+        <div className="p-4 border-t border-white/10 space-y-1">
           <Link
             href="/"
             onClick={closeSidebar}
@@ -93,6 +98,13 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             <Home className="w-5 h-5 flex-shrink-0" />
             العودة للموقع
           </Link>
+          <button
+            onClick={() => { closeSidebar(); handleLogout(); }}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400/70 hover:bg-red-500/10 hover:text-red-400 transition-all font-medium text-sm"
+          >
+            <LogOut className="w-5 h-5 flex-shrink-0" />
+            تسجيل الخروج
+          </button>
         </div>
       </aside>
 

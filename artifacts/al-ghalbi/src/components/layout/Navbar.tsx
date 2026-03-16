@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Search, Moon, Sun, Menu, X, Home, LayoutDashboard, FileText, Loader2 } from "lucide-react";
+import { Search, Moon, Sun, Menu, X, Home, Loader2 } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -133,9 +133,6 @@ export function Navbar() {
                 <Link href="/" className="text-foreground/80 hover:text-primary transition-colors flex items-center gap-1.5">
                   <Home className="w-4 h-4" /> الرئيسية
                 </Link>
-                <Link href="/admin" className="text-foreground/80 hover:text-primary transition-colors flex items-center gap-1.5">
-                  <LayoutDashboard className="w-4 h-4" /> الإدارة
-                </Link>
               </nav>
               <div className="flex items-center gap-2 border-s border-border ps-4">
                 <button
@@ -204,9 +201,6 @@ export function Navbar() {
               <div className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-2">
                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-4 rounded-xl hover:bg-secondary/10 text-foreground font-semibold transition-colors">
                   <Home className="w-5 h-5 text-primary" /> الرئيسية
-                </Link>
-                <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-4 rounded-xl hover:bg-secondary/10 text-foreground font-semibold transition-colors">
-                  <LayoutDashboard className="w-5 h-5 text-primary" /> لوحة الإدارة
                 </Link>
               </div>
               <div className="p-6 border-t border-border">

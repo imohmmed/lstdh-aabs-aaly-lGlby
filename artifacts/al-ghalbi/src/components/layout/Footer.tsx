@@ -109,11 +109,8 @@ export function Footer() {
 
         </div>
 
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/50">
+        <div className="pt-8 border-t border-white/10 flex items-center justify-center text-sm text-white/50">
           <p>© {new Date().getFullYear()} الأستاذ عباس علي الغالبي. جميع الحقوق محفوظة.</p>
-          <div className="flex gap-6">
-            <Link href="/admin" className="hover:text-white transition-colors">لوحة الإدارة</Link>
-          </div>
         </div>
       </div>
     </footer>
