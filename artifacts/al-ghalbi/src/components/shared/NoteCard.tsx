@@ -82,12 +82,24 @@ export function NoteCard({ note, index }: NoteCardProps) {
           >
             <Eye className="w-4 h-4" /> عرض
           </Link>
-          <Link 
-            href={`/note/${note.id}`}
-            className="flex-1 bg-secondary hover:bg-secondary/90 text-white flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all duration-300 shadow-md"
-          >
-            <Download className="w-4 h-4" /> تحميل
-          </Link>
+          {note.telegramDownloadUrl ? (
+            <a
+              href={note.telegramDownloadUrl}
+              target="_blank"
+              rel="noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="flex-1 bg-secondary hover:bg-secondary/90 text-white flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all duration-300 shadow-md"
+            >
+              <Download className="w-4 h-4" /> تحميل
+            </a>
+          ) : (
+            <Link
+              href={`/note/${note.id}`}
+              className="flex-1 bg-secondary hover:bg-secondary/90 text-white flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all duration-300 shadow-md opacity-50"
+            >
+              <Download className="w-4 h-4" /> تحميل
+            </Link>
+          )}
         </div>
       </div>
     </motion.div>
