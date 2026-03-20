@@ -6,7 +6,7 @@ import type { Request, Response, NextFunction } from "express";
 
 const router = Router();
 
-const BASE_URL = process.env.SITE_URL || "https://swagy.world";
+const BASE_URL = process.env.SITE_URL || "https://abbas-galiby.com";
 
 function toAbsolute(url: string | null | undefined): string | null {
   if (!url) return null;

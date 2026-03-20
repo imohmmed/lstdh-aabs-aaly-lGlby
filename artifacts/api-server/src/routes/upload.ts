@@ -2,11 +2,24 @@ import { Router, type IRouter } from "express";
 import multer from "multer";
 import path from "path";
 import { randomUUID } from "crypto";
-import { objectStorageClient } from "../lib/objectStorage";
+import fs from "fs/promises";
 
 const router: IRouter = Router();
 
 const BUCKET_ID = process.env.DEFAULT_OBJECT_STORAGE_BUCKET_ID || "";
+const USE_LOCAL = !BUCKET_ID || process.env.USE_LOCAL_STORAGE === "true";
+const UPLOADS_DIR = process.env.UPLOADS_DIR || path.resolve(process.cwd(), "uploads");
+
+let objectStorageClient: any = null;
+if (!USE_LOCAL) {
+  import("../lib/objectStorage").then((m) => {
+    objectStorageClient = m.objectStorageClient;
+  });
+}
+
+if (USE_LOCAL) {
+  fs.mkdir(UPLOADS_DIR, { recursive: true }).catch(() => {});
+}
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -19,14 +32,19 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-async function uploadToGCS(buffer: Buffer, originalName: string, mimeType: string): Promise<string> {
+async function uploadFile(buffer: Buffer, originalName: string, mimeType: string): Promise<string> {
   const ext = path.extname(originalName);
   const filename = `${randomUUID()}${ext}`;
-  const gcsPath = `uploads/${filename}`;
-  const bucket = objectStorageClient.bucket(BUCKET_ID);
-  const file = bucket.file(gcsPath);
-  await file.save(buffer, { contentType: mimeType, resumable: false });
-  // Return just filename — served at /api/uploads/<filename>
+
+  if (USE_LOCAL) {
+    await fs.writeFile(path.join(UPLOADS_DIR, filename), buffer);
+  } else {
+    const gcsPath = `uploads/${filename}`;
+    const bucket = objectStorageClient.bucket(BUCKET_ID);
+    const file = bucket.file(gcsPath);
+    await file.save(buffer, { contentType: mimeType, resumable: false });
+  }
+
   return filename;
 }
 
@@ -54,7 +72,7 @@ router.post("/pdf", upload.single("file"), async (req, res) => {
       pageCount = 1;
     }
 
-    const objectPath = await uploadToGCS(buffer, req.file.originalname, req.file.mimetype);
+    const objectPath = await uploadFile(buffer, req.file.originalname, req.file.mimetype);
     const url = `/api/uploads/${objectPath}`;
     res.json({ url, pageCount, fileSize });
   } catch (err) {
@@ -66,7 +84,7 @@ router.post("/pdf", upload.single("file"), async (req, res) => {
 router.post("/image", upload.single("file"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-    const objectPath = await uploadToGCS(req.file.buffer, req.file.originalname, req.file.mimetype);
+    const objectPath = await uploadFile(req.file.buffer, req.file.originalname, req.file.mimetype);
     const url = `/api/uploads/${objectPath}`;
     res.json({ url });
   } catch (err) {
