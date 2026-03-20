@@ -13,18 +13,19 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
 
   const [captchaToken, setCaptchaToken] = useState("");
-  const [captchaImage, setCaptchaImage] = useState("");
+  const [captchaImageUrl, setCaptchaImageUrl] = useState("");
   const [captchaAnswer, setCaptchaAnswer] = useState("");
   const [captchaLoading, setCaptchaLoading] = useState(false);
 
   const loadCaptcha = useCallback(async () => {
     setCaptchaLoading(true);
     setCaptchaAnswer("");
+    setCaptchaImageUrl("");
     try {
       const res = await fetch(`${import.meta.env.BASE_URL}api/auth/captcha`);
       const data = await res.json();
       setCaptchaToken(data.token);
-      setCaptchaImage(data.image);
+      setCaptchaImageUrl(`${import.meta.env.BASE_URL}api/auth/captcha-image/${data.token}`);
     } catch {
       setError("تعذّر تحميل الكابتشا");
     } finally {
@@ -138,11 +139,11 @@ export default function AdminLogin() {
                 <div className="flex-1 bg-white/5 border border-white/10 rounded-xl overflow-hidden flex items-center justify-center p-2 min-h-[48px]">
                   {captchaLoading ? (
                     <RefreshCw className="w-5 h-5 text-white/30 animate-spin" />
-                  ) : captchaImage ? (
+                  ) : captchaImageUrl ? (
                     <img
-                      src={captchaImage}
+                      src={captchaImageUrl}
                       alt="كابتشا"
-                      className="h-10 select-none pointer-events-none"
+                      className="h-10 w-auto select-none pointer-events-none"
                       draggable={false}
                     />
                   ) : null}

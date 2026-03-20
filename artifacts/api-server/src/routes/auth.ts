@@ -12,6 +12,7 @@ const TOKEN_EXPIRY = "7d";
 
 interface CaptchaEntry {
   answer: number;
+  svg: string;
   expiresAt: number;
 }
 
@@ -25,21 +26,21 @@ setInterval(() => {
 }, 60_000);
 
 function generateCaptchaSvg(text: string): string {
-  const width = 160;
-  const height = 56;
+  const width = 180;
+  const height = 60;
   let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`;
   svg += `<rect width="100%" height="100%" fill="#1e293b" rx="8"/>`;
 
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 8; i++) {
     const x1 = randomInt(0, width);
     const y1 = randomInt(0, height);
     const x2 = randomInt(0, width);
     const y2 = randomInt(0, height);
-    const opacity = (randomInt(15, 35) / 100).toFixed(2);
+    const opacity = (randomInt(15, 40) / 100).toFixed(2);
     svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(255,255,255,${opacity})" stroke-width="1"/>`;
   }
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 25; i++) {
     const cx = randomInt(0, width);
     const cy = randomInt(0, height);
     const r = randomInt(1, 3);
@@ -47,23 +48,33 @@ function generateCaptchaSvg(text: string): string {
   }
 
   const chars = text.split("");
-  const startX = 20;
-  const spacing = 24;
+  const totalWidth = chars.length * 22;
+  const startX = Math.floor((width - totalWidth) / 2);
   chars.forEach((ch, i) => {
-    const x = startX + i * spacing + randomInt(-3, 3);
-    const y = 36 + randomInt(-4, 4);
-    const rotate = randomInt(-15, 15);
-    const colors = ["#4ade80", "#38bdf8", "#f9a8d4", "#fbbf24", "#a78bfa"];
+    const x = startX + i * 22 + randomInt(-2, 3);
+    const y = 40 + randomInt(-5, 5);
+    const rotate = randomInt(-18, 18);
+    const colors = ["#4ade80", "#38bdf8", "#f9a8d4", "#fbbf24", "#a78bfa", "#fb923c"];
     const color = colors[randomInt(0, colors.length)];
-    svg += `<text x="${x}" y="${y}" font-family="monospace" font-size="${randomInt(22, 28)}" font-weight="bold" fill="${color}" transform="rotate(${rotate},${x},${y})">${ch}</text>`;
+    const size = randomInt(24, 30);
+    const escaped = ch === "&" ? "&amp;" : ch === "<" ? "&lt;" : ch === ">" ? "&gt;" : ch;
+    svg += `<text x="${x}" y="${y}" font-family="monospace,Courier" font-size="${size}" font-weight="bold" fill="${color}" transform="rotate(${rotate},${x},${y})">${escaped}</text>`;
   });
+
+  for (let i = 0; i < 3; i++) {
+    const cx = randomInt(20, width - 20);
+    const cy = randomInt(10, height - 10);
+    const rx = randomInt(20, 60);
+    const ry = randomInt(10, 25);
+    svg += `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+  }
 
   svg += `</svg>`;
   return svg;
 }
 
 router.get("/captcha", (_req, res) => {
-  const ops = ["+", "-", "×"] as const;
+  const ops = ["+", "-", "x"] as const;
   const op = ops[randomInt(0, ops.length)];
   let a: number, b: number, answer: number;
 
@@ -78,7 +89,7 @@ router.get("/captcha", (_req, res) => {
       b = randomInt(1, a);
       answer = a - b;
       break;
-    case "×":
+    case "x":
       a = randomInt(2, 12);
       b = randomInt(2, 12);
       answer = a * b;
@@ -86,15 +97,26 @@ router.get("/captcha", (_req, res) => {
   }
 
   const token = randomUUID();
-  captchaStore.set(token, { answer, expiresAt: Date.now() + 5 * 60 * 1000 });
-
   const questionText = `${a} ${op} ${b} = ?`;
   const svg = generateCaptchaSvg(questionText);
+  captchaStore.set(token, { answer, svg, expiresAt: Date.now() + 5 * 60 * 1000 });
 
-  res.json({
-    token,
-    image: `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`,
-  });
+  res.json({ token });
+});
+
+router.get("/captcha-image/:token", (req, res) => {
+  const raw = req.params.token;
+  const token = Array.isArray(raw) ? raw[0] : String(raw ?? "");
+  const entry = captchaStore.get(token);
+  if (!entry) {
+    const fallback = `<svg xmlns="http://www.w3.org/2000/svg" width="180" height="60"><rect width="100%" height="100%" fill="#1e293b" rx="8"/><text x="90" y="35" text-anchor="middle" fill="#94a3b8" font-size="14" font-family="sans-serif">انتهت الصلاحية</text></svg>`;
+    res.set("Content-Type", "image/svg+xml");
+    res.set("Cache-Control", "no-store");
+    return res.send(fallback);
+  }
+  res.set("Content-Type", "image/svg+xml");
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate");
+  res.send(entry.svg);
 });
 
 router.post("/login", async (req, res) => {
