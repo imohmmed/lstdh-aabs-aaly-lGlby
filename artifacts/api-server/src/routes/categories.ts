@@ -8,6 +8,7 @@ import {
   UpdateCategoryParams,
   DeleteCategoryParams,
 } from "@workspace/api-zod";
+import { requireAdmin } from "../middleware/auth";
 
 const router: IRouter = Router();
 
@@ -23,7 +24,7 @@ router.get("/", async (_req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", requireAdmin, async (req, res) => {
   try {
     const body = CreateCategoryBody.parse(req.body);
     const insertValues: Record<string, unknown> = {
@@ -42,7 +43,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", requireAdmin, async (req, res) => {
   try {
     const { id } = UpdateCategoryParams.parse({ id: Number(req.params.id) });
     const partial = UpdateCategoryBody.partial().parse(req.body);
@@ -68,7 +69,7 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", requireAdmin, async (req, res) => {
   try {
     const { id } = DeleteCategoryParams.parse({ id: Number(req.params.id) });
     const [deleted] = await db

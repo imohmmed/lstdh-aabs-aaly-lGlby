@@ -21,9 +21,25 @@ if (USE_LOCAL) {
   fs.mkdir(UPLOADS_DIR, { recursive: true }).catch(() => {});
 }
 
-const upload = multer({
+const ALLOWED_PDF_TYPES = ["application/pdf"];
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+
+const pdfUpload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 50 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (ALLOWED_PDF_TYPES.includes(file.mimetype)) cb(null, true);
+    else cb(new Error("نوع الملف غير مسموح، يُقبل فقط PDF"));
+  },
+});
+
+const imageUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (ALLOWED_IMAGE_TYPES.includes(file.mimetype)) cb(null, true);
+    else cb(new Error("نوع الملف غير مسموح، يُقبل فقط JPG/PNG/WebP/GIF"));
+  },
 });
 
 function formatFileSize(bytes: number): string {
@@ -48,7 +64,7 @@ async function uploadFile(buffer: Buffer, originalName: string, mimeType: string
   return filename;
 }
 
-router.post("/pdf", upload.single("file"), async (req, res) => {
+router.post("/pdf", pdfUpload.single("file"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
@@ -81,7 +97,7 @@ router.post("/pdf", upload.single("file"), async (req, res) => {
   }
 });
 
-router.post("/image", upload.single("file"), async (req, res) => {
+router.post("/image", imageUpload.single("file"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
     const objectPath = await uploadFile(req.file.buffer, req.file.originalname, req.file.mimetype);

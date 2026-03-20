@@ -11,6 +11,7 @@ import {
   DeleteNoteParams,
   GetSimilarNotesParams,
 } from "@workspace/api-zod";
+import { requireAdmin } from "../middleware/auth";
 
 const router: IRouter = Router();
 
@@ -111,7 +112,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", requireAdmin, async (req, res) => {
   try {
     const body = CreateNoteBody.parse(req.body);
     const [created] = await db
@@ -159,7 +160,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", requireAdmin, async (req, res) => {
   try {
     const { id } = UpdateNoteParams.parse({ id: Number(req.params.id) });
     const body = UpdateNoteBody.parse(req.body);
@@ -180,7 +181,7 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", requireAdmin, async (req, res) => {
   try {
     const { id } = DeleteNoteParams.parse({ id: Number(req.params.id) });
     const [deleted] = await db

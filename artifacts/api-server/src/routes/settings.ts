@@ -2,6 +2,7 @@ import { Router } from "express";
 import { db } from "@workspace/db";
 import { siteSettingsTable } from "@workspace/db/schema";
 import { eq } from "drizzle-orm";
+import { requireAdmin } from "../middleware/auth";
 
 const router = Router();
 
@@ -16,7 +17,7 @@ router.get("/", async (_req, res) => {
   }
 });
 
-router.patch("/", async (req, res) => {
+router.patch("/", requireAdmin, async (req, res) => {
   try {
     const updates = req.body as Record<string, string>;
     for (const [key, value] of Object.entries(updates)) {
